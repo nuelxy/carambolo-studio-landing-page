@@ -14,9 +14,7 @@ export default defineConfig({
     },
   },
   plugins: [
-    tanstackStart({
-      server: { entry: "server" },
-    }),
+    tanstackStart(),
     viteReact(),
     tailwindcss(),
     tsConfigPaths(),
