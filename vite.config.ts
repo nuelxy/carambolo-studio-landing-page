@@ -14,7 +14,11 @@ export default defineConfig({
     },
   },
   plugins: [
-    tanstackStart(),
+    tanstackStart({
+      server: {
+        preset: "vercel",
+      },
+    }),
     viteReact(),
     tailwindcss(),
     tsConfigPaths(),
