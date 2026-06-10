@@ -52,3 +52,5 @@ coverage/
 *.sw?.obsidian/
 .obsidian/
 .obsidian/
+
+.vercel
