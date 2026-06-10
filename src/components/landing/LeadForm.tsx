@@ -48,9 +48,31 @@ function clean(value: string) {
   return value.trim() || "Não informado";
 }
 
+function getMessageIntro(servico: string) {
+  switch (servico) {
+    case "Podcast":
+      return "Olá, quero solicitar uma avaliação para gravação de podcast no Carambolo Studio.";
+
+    case "Ensaio":
+      return "Olá, quero reservar um horário de ensaio no Carambolo Studio.";
+
+    case "Gravação":
+      return "Olá, quero solicitar uma avaliação para gravação musical no Carambolo Studio.";
+
+    case "Produção musical":
+      return "Olá, quero solicitar uma avaliação para produção musical no Carambolo Studio.";
+
+    case "Outro":
+      return "Olá, quero solicitar uma avaliação no Carambolo Studio.";
+
+    default:
+      return "Olá, quero solicitar uma avaliação no Carambolo Studio.";
+  }
+}
+
 function buildWhatsAppMessage(form: LeadFormState) {
   const lines = [
-    "Olá, quero solicitar uma avaliação do meu projeto musical no Carambolo Studio.",
+    getMessageIntro(form.servico),
     "",
     `Nome: ${clean(form.nome)}`,
     `WhatsApp: ${clean(form.whatsapp)}`,
@@ -87,6 +109,7 @@ function buildWhatsAppMessage(form: LeadFormState) {
   }
 
   lines.push(`Detalhes adicionais: ${clean(form.detalhes)}`);
+
   return lines.join("\n");
 }
 
@@ -112,7 +135,7 @@ export function LeadForm() {
   function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     trackEvent("form_submit", {
-      service: form.servico,
+      service: form.servico || "not_provided",
       projectType: form.tipoProjeto || "not_provided",
       hasInstagram: Boolean(form.instagram.trim()),
     });

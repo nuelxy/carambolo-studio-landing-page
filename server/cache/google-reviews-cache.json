@@ -1,0 +1,46 @@
+{
+  "updatedAt": "2026-06-10T21:10:12.328Z",
+  "data": {
+    "name": "Carambolo Studio",
+    "rating": 4.8,
+    "totalReviews": 135,
+    "googleUrl": "https://maps.google.com/?cid=1785187511581317321",
+    "reviews": [
+      {
+        "authorName": "Emmanuel Lopes",
+        "rating": 5,
+        "text": "Local agradável. Acústica impecável. Atendimento maravilhoso. 100% recomendável.",
+        "relativeTime": "um ano atrás",
+        "profilePhotoUrl": "https://lh3.googleusercontent.com/a-/ALV-UjVb4I0lxIfWmKBeiUZsQbXZaSpLONeyRwYe0TXlMqFkEu1Xim3K=s128-c0x00000000-cc-rp-mo-ba4"
+      },
+      {
+        "authorName": "Tairo Júnior",
+        "rating": 5,
+        "text": "Atendimento de primeira qualidade, Studio que a cada dia trás melhorias em sua estrutura, sempre com novidades para seu clientes.",
+        "relativeTime": "6 anos atrás",
+        "profilePhotoUrl": "https://lh3.googleusercontent.com/a-/ALV-UjVMGn1OTsmqhL5jU_WEv4d6XHFb8l3wcnPuBd7nwmuD3KjUviI=s128-c0x00000000-cc-rp-mo-ba3"
+      },
+      {
+        "authorName": "Amanda Vaz",
+        "rating": 5,
+        "text": "Excelente atendimento, espaço aconchegante, climatizado, tem wi-fi. Sem contar na qualidade dos instrumentos e equipamentos e o preço acessível.",
+        "relativeTime": "6 anos atrás",
+        "profilePhotoUrl": "https://lh3.googleusercontent.com/a-/ALV-UjXQKzJSNuHdf00bZ4tlxq2VD7I7NL22S6su2L1UBJbC4DihZq16vw=s128-c0x00000000-cc-rp-mo-ba3"
+      },
+      {
+        "authorName": "Duda Motos",
+        "rating": 5,
+        "text": "Ambiente top, instrumentos de primeira qualidade. Amei",
+        "relativeTime": "um ano atrás",
+        "profilePhotoUrl": "https://lh3.googleusercontent.com/a-/ALV-UjXJ5NJgHxwd97ADMTzw4n8ZjEIl9p_xfBb2lBkypFZZtHqZtoktew=s128-c0x00000000-cc-rp-mo-ba2"
+      },
+      {
+        "authorName": "Relouin",
+        "rating": 5,
+        "text": "Excelente estúdio com equipamentos e acústica muito bons, atendimento de primeira e o melhor preço da cidade.",
+        "relativeTime": "8 anos atrás",
+        "profilePhotoUrl": "https://lh3.googleusercontent.com/a-/ALV-UjXlqnfGTEJIHWS8n5C89yiSVVq0QztM_xiw5TQ4JoH0eHa2JBjt=s128-c0x00000000-cc-rp-mo-ba3"
+      }
+    ]
+  }
+}

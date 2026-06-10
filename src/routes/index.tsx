@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 
-import heroImg from "@/assets/hero-studio.jpg";
+import heroImg from "@/assets/hero-studio-web.jpg";
 import { LandingPage } from "@/components/landing/LandingPage";
 
 const pageTitle = "Carambolo Studio | Gravação Musical em Teresina";

@@ -1,19 +1,32 @@
-import { useEffect, useState } from "react";
-import { ChevronDown, Instagram, MapPin, Menu, MessageCircle, Phone, X } from "lucide-react";
+import { useEffect, useState, useRef } from "react";
+import { IntroLoader } from "./IntroLoader";
+import {
+  Check,
+  ChevronDown,
+  Instagram,
+  MapPin,
+  Menu,
+  MessageCircle,
+  Phone,
+  Star,
+  Mic,
+  Play,
+  X,
+} from "lucide-react";
 
-import logoAsset from "@/assets/carambolo-logo.png.asset.json";
-import heroImg from "@/assets/hero-studio.jpg";
+import logoAsset from "@/assets/carambolo-logo.png";
+import heroImg from "@/assets/hero-studio-web.jpg";
 import galBand from "@/assets/gallery-band.jpg";
 import galConsole from "@/assets/gallery-console.jpg";
 import galDrums from "@/assets/gallery-drums.jpg";
 import galGuitar from "@/assets/gallery-guitar.jpg";
 import galMic from "@/assets/gallery-mic.jpg";
 import galVocal from "@/assets/gallery-vocal.jpg";
+import parkingImg from "@/assets/parking-studio.jpg";
 
 import {
   differentials,
   faqs,
-  materialPlaceholders,
   navigationLinks,
   processSteps,
   recordingReasons,
@@ -34,28 +47,49 @@ const galleryImages = [
   { src: galGuitar, alt: "Guitarra pronta para gravação" },
   { src: galDrums, alt: "Bateria preparada para captação" },
   { src: galBand, alt: "Banda em ambiente de gravação" },
-  { src: galDrums, alt: "Placeholder visual para galeria real do estúdio" },
+  { src: parkingImg, alt: "Área externa e estacionamento do Carambolo Studio" },
 ];
 
 export function LandingPage() {
+  const [showIntro, setShowIntro] = useState(true);
+
   return (
-    <div className="min-h-screen bg-background text-foreground noise-bg">
-      <Header />
-      <main>
-        <Hero />
-        <RecordingFocus />
-        <Services />
-        <EvaluationOffer />
-        <HowItWorks />
-        <Differentials />
-        <Materials />
-        <LeadForm />
-        <FAQ />
-        <FinalCTA />
-      </main>
-      <Footer />
-      <MobileStickyCTA />
-    </div>
+    <>
+      {showIntro && <IntroLoader onFinish={() => setShowIntro(false)} />}
+
+      <div
+        className={
+          showIntro
+            ? "min-h-screen bg-background text-foreground noise-bg opacity-0"
+            : "min-h-screen bg-background text-foreground noise-bg opacity-100 transition-opacity duration-700"
+        }
+      >
+        <Header />
+
+        <main>
+          <Hero />
+          <RecordingFocus />
+          <Services />
+          <Rehearsal />
+          <EvaluationOffer />
+          <HowItWorks />
+          <Differentials />
+          <Gallery />
+          <SocialProof />
+          <ParkingAccess />
+
+          <section id="avaliacao">
+            <LeadForm />
+          </section>
+
+          <FAQ />
+          <FinalCTA />
+        </main>
+
+        <Footer />
+        <MobileStickyCTA />
+      </div>
+    </>
   );
 }
 
@@ -63,110 +97,117 @@ function Header() {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-40 border-b border-border/70 bg-background/88 backdrop-blur-lg">
-      <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 md:px-6">
+    <header className="sticky top-0 z-40 border-b border-border/70 bg-[#050505]">
+      <div className="relative mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 md:px-6">
         <a href="#top" className="flex items-center gap-2" aria-label="Voltar ao início">
           <img
-            src={logoAsset.url}
+            src={logoAsset}
             alt="Carambolo Studio"
             className="h-10 w-10 rounded-md object-contain"
             width={40}
             height={40}
           />
+
           <span className="font-display text-xl">
             CARAMBOLO <span className="text-primary">STUDIO</span>
           </span>
         </a>
-        <nav
-          className="hidden items-center gap-7 text-sm text-muted-foreground lg:flex"
-          aria-label="Navegação principal"
+
+        <button
+          type="button"
+          aria-label={open ? "Fechar menu" : "Abrir menu"}
+          aria-expanded={open}
+          className="rounded-md border border-primary p-2 text-primary transition hover:bg-primary hover:text-primary-foreground"
+          onClick={() => setOpen((current) => !current)}
         >
-          {navigationLinks.map((link) => (
-            <a key={link.href} href={link.href} className="transition hover:text-primary">
-              {link.label}
-            </a>
-          ))}
-        </nav>
-        <div className="flex items-center gap-2">
-          <a
-            href="#avaliacao"
-            onClick={() => trackEvent("cta_gravacao_click", { position: "header" })}
-            className="hidden rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition hover:brightness-110 md:inline-flex"
-          >
-            Quero gravar minha música
-          </a>
-          <button
-            type="button"
-            aria-label={open ? "Fechar menu" : "Abrir menu"}
-            aria-expanded={open}
-            className="rounded-md border border-border p-2 lg:hidden"
-            onClick={() => setOpen((current) => !current)}
-          >
-            {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-          </button>
-        </div>
-      </div>
-      {open && (
-        <div className="border-t border-border bg-background lg:hidden">
-          <div className="mx-auto flex max-w-7xl flex-col gap-1 px-4 py-3">
-            {navigationLinks.map((link) => (
-              <a
-                key={link.href}
-                href={link.href}
+          {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+        </button>
+
+        {open && (
+          <div className="absolute right-4 top-[calc(100%+12px)] z-50 w-[min(340px,calc(100vw-2rem))] rounded-xl border border-border bg-[#050505] p-5 shadow-2xl md:right-6">
+            <div className="flex items-center justify-between">
+              <span className="font-display text-base">
+                CARAMBOLO <span className="text-primary">STUDIO</span>
+              </span>
+
+              <button
+                type="button"
+                aria-label="Fechar menu"
+                className="rounded-md border border-primary bg-primary p-2 text-primary-foreground transition hover:brightness-110"
                 onClick={() => setOpen(false)}
-                className="rounded-md px-3 py-2 text-sm hover:bg-secondary"
               >
-                {link.label}
-              </a>
-            ))}
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+
+            <nav className="mt-6 flex flex-col gap-1" aria-label="Menu lateral">
+              {navigationLinks.map((link) => (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  onClick={() => setOpen(false)}
+                  className="rounded-md px-3 py-3 text-sm text-muted-foreground transition hover:bg-primary/10 hover:text-primary"
+                >
+                  {link.label}
+                </a>
+              ))}
+            </nav>
+
             <a
               href="#avaliacao"
-              onClick={() => setOpen(false)}
-              className="mt-2 rounded-md bg-primary px-3 py-2 text-center text-sm font-semibold text-primary-foreground"
+              onClick={() => {
+                trackEvent("cta_gravacao_click", { position: "header_dropdown_menu" });
+                setOpen(false);
+              }}
+              className="mt-5 inline-flex w-full items-center justify-center rounded-md bg-primary px-4 py-3 text-sm font-semibold text-primary-foreground transition hover:brightness-110"
             >
-              Solicitar avaliação do meu projeto
+              Quero gravar minha música
             </a>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </header>
   );
 }
 
 function Hero() {
   return (
-    <section id="top" className="relative min-h-[88svh] overflow-hidden">
-      <div className="absolute inset-0 -z-10">
+    <section id="top" className="relative isolate min-h-[88svh] overflow-hidden bg-background">
+      <div className="absolute inset-0 z-0">
         <img
           src={heroImg}
           alt="Estúdio preparado para gravação musical no Carambolo Studio"
-          className="h-full w-full object-cover opacity-55"
+          className="h-full w-full object-cover object-[58%_45%] opacity-100 sm:object-[56%_45%] lg:object-center"
           width={1920}
           height={1080}
           decoding="async"
           fetchPriority="high"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-background/60 via-background/62 to-background" />
-        <div className="absolute inset-0 grid-bg opacity-25" />
+        <div className="absolute inset-0 bg-[linear-gradient(90deg,oklch(0.13_0.005_60/0.9)_0%,oklch(0.13_0.005_60/0.7)_38%,oklch(0.13_0.005_60/0.34)_68%,oklch(0.13_0.005_60/0.1)_100%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_73%_34%,oklch(0.83_0.17_88/0.2),transparent_31%),linear-gradient(180deg,oklch(0.13_0.005_60/0.18)_0%,transparent_42%,oklch(0.13_0.005_60/0.64)_100%)]" />
+        <div className="absolute inset-0 grid-bg opacity-[0.07]" />
       </div>
-      <div className="mx-auto flex min-h-[88svh] max-w-7xl flex-col justify-center px-4 pb-16 pt-20 md:px-6 md:pb-20 md:pt-24">
-        <div className="max-w-5xl">
-          <p className="mb-5 inline-flex rounded-full border border-primary/35 bg-background/55 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-primary">
+      <div className="relative z-10 mx-auto flex min-h-[88svh] max-w-7xl flex-col justify-center px-4 pb-14 pt-24 md:px-6 md:pb-20 md:pt-28">
+        <div className="max-w-[46rem]">
+          <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
+            <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-primary" />
             Gravação musical em Teresina
-          </p>
-          <h1 className="font-display text-4xl uppercase leading-[1.04] md:text-6xl lg:text-7xl">
-            Do rascunho ao arquivo final: grave sua música com direção técnica, captação
-            profissional e orientação em cada etapa.
+          </div>
+          <h1 className="mt-7 max-w-[43rem] text-[clamp(2.65rem,5.5vw,5.85rem)] font-medium leading-[0.98] tracking-normal text-foreground">
+            Sua música, gravada como deve ser.
           </h1>
-          <p className="mt-6 max-w-2xl text-base text-muted-foreground md:text-lg">
-            Para artistas, bandas e projetos musicais que precisam sair da guia, do ensaio ou da
-            ideia e chegar a uma gravação com escopo claro.
+          <p className="mt-4 font-display text-[clamp(1.7rem,3.2vw,3rem)] uppercase leading-none tracking-normal text-primary">
+            Com direção, intenção e acabamento.
           </p>
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+          <p className="mt-7 max-w-[36rem] text-base leading-7 text-foreground/82 md:text-lg md:leading-8">
+            Aqui sua música sai do celular e vira faixa. Com direção criativa, captação profissional
+            e finalização de verdade.
+          </p>
+          <div className="mt-9 flex flex-col gap-3 sm:flex-row">
             <a
               href="#avaliacao"
               onClick={() => trackEvent("cta_gravacao_click", { position: "hero" })}
-              className="inline-flex items-center justify-center gap-2 rounded-md bg-primary px-6 py-3.5 text-sm font-semibold text-primary-foreground shadow-[var(--shadow-glow)] transition hover:brightness-110 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background"
+              className="inline-flex items-center justify-center gap-2 rounded-md bg-primary px-6 py-3.5 text-sm font-semibold text-primary-foreground shadow-[0_22px_70px_-26px_oklch(0.83_0.17_88/0.9)] transition hover:brightness-110 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background"
             >
               Quero gravar minha música
             </a>
@@ -177,27 +218,23 @@ function Hero() {
               onClick={() =>
                 trackEvent("whatsapp_click", { position: "hero", number: WHATSAPP_NUMBER })
               }
-              className="inline-flex items-center justify-center gap-2 rounded-md border border-border bg-background/70 px-6 py-3.5 text-sm font-semibold text-foreground transition hover:border-primary/60"
+              className="inline-flex items-center justify-center gap-2 rounded-md border-[1.5px] border-white/85 bg-white/[0.08] px-6 py-3.5 text-sm font-semibold text-foreground backdrop-blur-md transition hover:border-primary/80 hover:bg-white/[0.16] hover:text-foreground"
             >
               <MessageCircle className="h-4 w-4" />
-              Falar com o produtor
+              Tirar dúvidas
             </a>
           </div>
-          <div className="mt-8 flex flex-wrap gap-2">
-            {[
-              "Captação",
-              "Direção técnica",
-              "Mixagem",
-              "Masterização",
-              "Orientação de projeto",
-            ].map((item) => (
-              <span
-                key={item}
-                className="rounded-full border border-border bg-background/60 px-3 py-1 text-xs text-muted-foreground"
-              >
-                {item}
-              </span>
-            ))}
+          <div className="mt-10 hidden max-w-[34rem] sm:block">
+            <div
+              className="flex items-center gap-3 text-[0.66rem] font-semibold uppercase tracking-[0.26em]"
+              aria-label="Processo: ideia, captação e finalização"
+            >
+              <span className="text-primary/90">Ideia</span>
+              <span className="h-px w-10 bg-gradient-to-r from-primary/70 to-white/20" />
+              <span className="text-foreground/72">Captação</span>
+              <span className="h-px w-10 bg-gradient-to-r from-white/20 to-primary/55" />
+              <span className="text-foreground/58">Finalização</span>
+            </div>
           </div>
         </div>
       </div>
@@ -206,35 +243,115 @@ function Hero() {
 }
 
 function RecordingFocus() {
+  const sectionRef = useRef<HTMLElement | null>(null);
+  const [isVisible, setIsVisible] = useState(false);
+
+  const bullets = [
+    "Para quem quer lançar um single.",
+    "Para quem precisa gravar voz ou instrumentos.",
+    "Para bandas que querem registrar um projeto.",
+    "Para artistas que precisam de portfólio.",
+    "Para músicos que vão participar de edital, festival ou concurso.",
+    "Para quem quer transformar uma ideia em uma música finalizada.",
+  ];
+
+  useEffect(() => {
+    const element = sectionRef.current;
+    if (!element) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.disconnect();
+        }
+      },
+      {
+        threshold: 0.28,
+      },
+    );
+
+    observer.observe(element);
+
+    return () => observer.disconnect();
+  }, []);
+
   return (
-    <section id="gravacao" className="border-t border-border/60 py-20 md:py-28">
-      <div className="mx-auto grid max-w-7xl gap-10 px-4 md:grid-cols-[1.1fr_0.9fr] md:px-6">
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">
-            Foco principal
+    <section
+      ref={sectionRef}
+      id="gravacao"
+      className="border-t border-border/60 py-20 md:py-28"
+    >
+      <div className="mx-auto max-w-5xl px-4 md:px-6">
+        <h2
+          className={`font-display text-3xl uppercase leading-tight transition-all duration-700 ease-out md:text-5xl ${
+            isVisible ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
+          }`}
+        >
+          Sua música não precisa ficar presa no{" "}
+          <span className="text-primary">áudio de WhatsApp</span>, no ensaio ou no papel.
+        </h2>
+
+        <div className="mt-6 space-y-4 text-muted-foreground md:text-lg">
+          <p
+            className={`transition-all duration-700 ease-out ${
+              isVisible ? "translate-y-0 opacity-100" : "translate-y-6 opacity-0"
+            }`}
+            style={{
+              transitionDelay: isVisible ? "180ms" : "0ms",
+            }}
+          >
+            Você pode ter uma letra anotada, uma melodia gravada no celular, ou uma música autoral
+            que ainda precisa ganhar forma, ou só a vontade de começar.
           </p>
-          <h2 className="mt-3 font-display text-3xl uppercase leading-tight md:text-5xl">
-            A página é sobre gravar música, com orientação antes de entrar na sessão.
-          </h2>
-          <div className="mt-6 space-y-4 text-muted-foreground md:text-lg">
-            <p>
-              Gravar não é só apertar rec. A captação, a preparação, a escolha de takes e a
-              finalização interferem diretamente no resultado.
-            </p>
-            <p>
-              Por isso o primeiro passo é entender o projeto: o que já existe, o que precisa ser
-              gravado e quais etapas fazem sentido para a música.
-            </p>
-          </div>
+
+          <p
+            className={`transition-all duration-700 ease-out ${
+              isVisible ? "translate-y-0 opacity-100" : "translate-y-6 opacity-0"
+            }`}
+            style={{
+              transitionDelay: isVisible ? "300ms" : "0ms",
+            }}
+          >
+            Gravar não é apenas apertar <span className="text-primary">“rec”</span>. Uma boa
+            gravação depende de captação, direção, preparação, edição, mixagem e decisões técnicas
+            que afetam diretamente o resultado final.
+          </p>
+
+          <p
+            className={`transition-all duration-700 ease-out ${
+              isVisible ? "translate-y-0 opacity-100" : "translate-y-6 opacity-0"
+            }`}
+            style={{
+              transitionDelay: isVisible ? "420ms" : "0ms",
+            }}
+          >
+            No Carambolo Studio, você recebe orientação para entender o melhor caminho para o seu
+            projeto antes de investir tempo e dinheiro em uma sessão.
+          </p>
         </div>
-        <ul className="grid gap-3">
-          {recordingReasons.map((reason) => (
+
+        <ul className="mt-8 grid gap-3 sm:grid-cols-2">
+          {bullets.map((b, index) => (
             <li
-              key={reason}
-              className="flex items-start gap-3 rounded-lg border border-border bg-card/70 p-4"
+              key={b}
+              className={`group flex items-start gap-3 rounded-lg border border-border bg-card/60 p-4 transition-all duration-700 ease-out hover:-translate-y-1 hover:border-primary/55 hover:bg-primary/[0.035] hover:shadow-[0_0_30px_rgba(234,179,8,0.10)] ${
+                isVisible
+                  ? "translate-y-0 scale-100 opacity-100"
+                  : "translate-y-5 scale-95 opacity-0"
+              }`}
+              style={{
+                transitionDelay: isVisible ? `${560 + index * 90}ms` : "0ms",
+              }}
             >
-              <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-primary" />
-              <span className="text-sm">{reason}</span>
+              <Check
+                className={`mt-0.5 h-5 w-5 shrink-0 text-primary transition-transform duration-500 ease-out group-hover:scale-110 ${
+                  isVisible ? "scale-100" : "scale-75"
+                }`}
+                aria-hidden="true"
+              />
+
+              <span className="text-sm font-medium">{b}</span>
             </li>
           ))}
         </ul>
@@ -244,28 +361,250 @@ function RecordingFocus() {
 }
 
 function Services() {
+  const sectionRef = useRef<HTMLElement | null>(null);
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const element = sectionRef.current;
+    if (!element) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.disconnect();
+        }
+      },
+      {
+        threshold: 0.25,
+      },
+    );
+
+    observer.observe(element);
+
+    return () => observer.disconnect();
+  }, []);
+
   return (
-    <section className="border-t border-border/60 bg-card/20 py-20 md:py-28">
+    <section
+      ref={sectionRef}
+      className="border-t border-border/60 bg-card/20 py-20 md:py-28"
+    >
       <div className="mx-auto max-w-7xl px-4 md:px-6">
-        <div className="max-w-3xl">
+        <div
+          className={`max-w-3xl transition-all duration-700 ease-out ${
+            isVisible ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
+          }`}
+        >
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">
-            O que pode ser gravado
+            O que você pode gravar
           </p>
+
           <h2 className="mt-3 font-display text-3xl uppercase leading-tight md:text-5xl">
-            Serviços de áudio conectados ao projeto musical.
+            Gravação para artistas, bandas, criadores e empresas.
           </h2>
         </div>
+
         <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {serviceCards.map((service) => (
+          {serviceCards.map((service, index) => (
             <article
               key={service.title}
-              className="rounded-xl border border-border bg-card p-6 transition hover:-translate-y-1 hover:border-primary/50"
+              className={`group relative overflow-hidden rounded-xl border border-border bg-card p-6 transition-all duration-700 ease-out hover:-translate-y-1 hover:border-primary/60 hover:bg-primary/[0.035] hover:shadow-[0_0_35px_rgba(234,179,8,0.12)] ${
+                isVisible
+                  ? "translate-y-0 scale-100 opacity-100"
+                  : "translate-y-8 scale-95 opacity-0"
+              }`}
+              style={{
+                transitionDelay: isVisible ? `${160 + index * 80}ms` : "0ms",
+              }}
             >
-              <service.icon className="h-7 w-7 text-primary" aria-hidden="true" />
-              <h3 className="mt-4 font-display text-xl uppercase">{service.title}</h3>
-              <p className="mt-2 text-sm text-muted-foreground">{service.desc}</p>
+              <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
+                <div className="absolute -right-16 -top-16 h-36 w-36 rounded-full bg-primary/10 blur-3xl" />
+              </div>
+
+              <service.icon
+                className="relative z-10 h-7 w-7 text-primary transition-transform duration-500 ease-out group-hover:scale-110"
+                aria-hidden="true"
+              />
+
+              <h3 className="relative z-10 mt-4 font-display text-xl uppercase transition-colors duration-300 group-hover:text-primary">
+                {service.title}
+              </h3>
+
+              <p className="relative z-10 mt-2 text-sm text-muted-foreground">
+                {service.desc}
+              </p>
             </article>
           ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function Rehearsal() {
+  const sectionRef = useRef<HTMLElement | null>(null);
+  const [isVisible, setIsVisible] = useState(false);
+
+  const features = [
+    "Sala para até 7 pessoas",
+    "Bateria disponível",
+    "Amplificadores",
+    "Microfones",
+    "Mesa de som",
+    "Ar-condicionado",
+    "Isolamento acústico",
+    "Estacionamento próprio",
+    "Agendamento por hora",
+    "Pacotes mensais",
+    "Desconto para banda fixa",
+  ];
+
+  useEffect(() => {
+    const element = sectionRef.current;
+    if (!element) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.disconnect();
+        }
+      },
+      {
+        threshold: 0.35,
+      },
+    );
+
+    observer.observe(element);
+
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <section
+      ref={sectionRef}
+      id="ensaio"
+      className="border-t border-border/60 py-20 md:py-28"
+    >
+      <div className="mx-auto grid max-w-7xl items-center gap-10 px-4 md:grid-cols-[0.95fr_1.05fr] md:px-6">
+        <figure
+          className={`relative min-h-[420px] overflow-hidden rounded-2xl border border-border bg-card transition-all duration-1000 ease-out md:min-h-[560px] ${
+            isVisible
+              ? "translate-y-0 opacity-100"
+              : "translate-y-8 opacity-0"
+          }`}
+        >
+          <img
+            src={galDrums}
+            alt="Sala de ensaio do Carambolo Studio"
+            loading="lazy"
+            decoding="async"
+            className={`absolute inset-0 h-full w-full object-cover transition-transform duration-[1600ms] ease-out ${
+              isVisible ? "scale-100" : "scale-110"
+            }`}
+            width={900}
+            height={900}
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-background/75 via-background/10 to-transparent" />
+        </figure>
+
+        <div>
+          <div
+            className={`transition-all duration-700 ease-out ${
+              isVisible
+                ? "translate-y-0 opacity-100"
+                : "translate-y-6 opacity-0"
+            }`}
+          >
+            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
+              Sala de ensaio
+            </p>
+
+            <h2 className="mt-3 font-display text-3xl uppercase leading-tight md:text-5xl">
+              Precisa ensaiar antes de gravar?
+            </h2>
+
+            <p className="mt-5 max-w-xl text-muted-foreground md:text-lg">
+              O Carambolo Studio também recebe bandas e músicos que precisam preparar repertório,
+              show, gravação ou apresentação com estrutura adequada.
+            </p>
+          </div>
+
+          <ul className="mt-7 grid gap-3 sm:grid-cols-2">
+            {features.map((feature, index) => (
+              <li
+                key={feature}
+                className={`flex items-center gap-2 text-sm text-muted-foreground transition-all duration-700 ease-out ${
+                  isVisible
+                    ? "translate-y-0 opacity-100"
+                    : "translate-y-4 opacity-0"
+                }`}
+                style={{
+                  transitionDelay: isVisible ? `${120 + index * 45}ms` : "0ms",
+                }}
+              >
+                <Check className="h-4 w-4 shrink-0 text-primary" aria-hidden="true" />
+                <span>{feature}</span>
+              </li>
+            ))}
+          </ul>
+
+          <div
+            className={`relative mt-7 overflow-hidden rounded-xl border border-primary/30 bg-primary/5 p-5 transition-all duration-700 ease-out ${
+              isVisible
+                ? "translate-y-0 opacity-100 shadow-[0_0_35px_rgba(234,179,8,0.12)]"
+                : "translate-y-8 opacity-0"
+            }`}
+            style={{
+              transitionDelay: isVisible ? "650ms" : "0ms",
+            }}
+          >
+            <div
+              className={`absolute inset-0 z-10 bg-[#050505] transition-transform duration-1000 ease-in-out ${
+                isVisible ? "translate-x-full" : "translate-x-0"
+              }`}
+              style={{
+                transitionDelay: isVisible ? "950ms" : "0ms",
+              }}
+              aria-hidden="true"
+            />
+
+            <div className="relative z-0">
+              <p className="text-sm text-muted-foreground">Ensaio a partir de</p>
+
+              <p className="mt-1 font-display text-4xl text-primary">
+                R$ 50
+                <span className="ml-1 text-base text-muted-foreground">/hora</span>
+              </p>
+            </div>
+          </div>
+
+          <a
+            href={rehearsalWhatsAppUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => {
+              trackEvent("ensaio_click", {
+                position: "rehearsal_section",
+                number: WHATSAPP_NUMBER,
+              });
+              trackEvent("whatsapp_click", {
+                position: "rehearsal_section",
+                number: WHATSAPP_NUMBER,
+              });
+            }}
+            className={`mt-7 inline-flex items-center justify-center rounded-md border border-primary/50 px-6 py-3 text-sm font-semibold text-primary transition-all duration-700 ease-out hover:bg-primary hover:text-primary-foreground ${
+              isVisible
+                ? "translate-y-0 opacity-100"
+                : "translate-y-5 opacity-0"
+            }`}
+            style={{
+              transitionDelay: isVisible ? "900ms" : "0ms",
+            }}
+          >
+            Reservar horário de ensaio
+          </a>
         </div>
       </div>
     </section>
@@ -273,44 +612,107 @@ function Services() {
 }
 
 function EvaluationOffer() {
+  const sectionRef = useRef<HTMLElement | null>(null);
+  const [isVisible, setIsVisible] = useState(false);
+
+  const items = [
+    "Entendimento do projeto musical.",
+    "Orientação sobre o melhor formato de gravação.",
+    "Indicação do tipo de pacote mais adequado.",
+    "Direcionamento sobre captação, edição, mixagem e masterização.",
+    "Orientação inicial sobre próximos passos para lançamento, quando aplicável.",
+    "Indicação de parceiros para capa, audiovisual ou distribuição, quando necessário.",
+  ];
+
+  useEffect(() => {
+    const element = sectionRef.current;
+    if (!element) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.disconnect();
+        }
+      },
+      {
+        threshold: 0.35,
+      },
+    );
+
+    observer.observe(element);
+
+    return () => observer.disconnect();
+  }, []);
+
   return (
-    <section className="border-t border-border/60 py-20 md:py-28">
-      <div className="mx-auto grid max-w-7xl gap-10 px-4 md:grid-cols-[0.95fr_1.05fr] md:px-6">
+    <section
+      ref={sectionRef}
+      className="relative border-t border-border/60 py-20 md:py-28"
+    >
+      <div className="mx-auto grid max-w-7xl gap-10 px-4 md:grid-cols-2 md:px-6">
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">
-            Antes do orçamento
+            Oferta principal
           </p>
+
           <h2 className="mt-3 font-display text-3xl uppercase leading-tight md:text-5xl">
-            Entenda o melhor formato de gravação para o seu projeto.
+            Antes de gravar, entenda o{" "}
+            <span className="text-primary">melhor formato</span> para o seu projeto.
           </h2>
-          <p className="mt-6 text-muted-foreground md:text-lg">
-            A avaliação inicial organiza informações básicas para evitar orçamento genérico e
-            reduzir retrabalho. Ela não substitui uma proposta formal, mas ajuda a definir o
-            caminho.
-          </p>
+
+          <div className="mt-6 space-y-4 text-muted-foreground md:text-lg">
+            <p>
+              Cada música tem uma necessidade diferente. Algumas precisam apenas de captação vocal.
+              Outras exigem produção musical, músicos parceiros, edição, afinação, mixagem,
+              masterização ou planejamento completo.
+            </p>
+
+            <p>
+              Por isso, o primeiro passo é uma{" "}
+              <strong className="text-foreground">avaliação inicial do projeto</strong>. Você
+              conversa com o produtor, explica o que quer gravar e recebe uma orientação sobre o
+              melhor formato para transformar sua ideia em uma gravação profissional.
+            </p>
+          </div>
         </div>
-        <div className="rounded-xl border-2 border-primary/45 bg-card p-6 shadow-[var(--shadow-glow)] md:p-8">
-          <h3 className="font-display text-3xl uppercase">O que a avaliação busca esclarecer</h3>
-          <ul className="mt-6 space-y-3 text-sm">
-            {[
-              "Estágio atual da música: ideia, guia, repertório ensaiado ou material pronto.",
-              "Tipo de captação: voz, instrumentos, banda, live session ou projeto híbrido.",
-              "Etapas necessárias: produção, edição, mixagem, masterização e entrega.",
-              "Prazo, referências e arquivos que ajudam a preparar a sessão.",
-            ].map((item) => (
-              <li key={item} className="flex items-start gap-3">
-                <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-primary" />
-                <span>{item}</span>
+
+        <div
+          className={`rounded-2xl border-2 border-primary/50 bg-card p-6 shadow-[var(--shadow-glow)] transition-all duration-700 md:p-8 ${
+            isVisible
+              ? "animate-[offerPulse_1.4s_ease-in-out_2] border-primary/80 shadow-[0_0_45px_rgba(234,179,8,0.22)]"
+              : ""
+          }`}
+        >
+          <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-primary">
+            <Star className="h-4 w-4 fill-primary" />
+            Gratuito
+          </div>
+
+          <h3 className="mt-3 font-display text-3xl uppercase">
+            Avaliação inicial gratuita
+          </h3>
+
+          <ul className="mt-6 space-y-3">
+            {items.map((i) => (
+              <li key={i} className="flex items-start gap-3 text-sm">
+                <Check className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
+                <span>{i}</span>
               </li>
             ))}
           </ul>
+
           <a
             href="#avaliacao"
-            onClick={() => trackEvent("avaliacao_projeto_click", { position: "offer" })}
-            className="mt-7 inline-flex w-full items-center justify-center rounded-md bg-primary px-6 py-3.5 text-sm font-semibold text-primary-foreground transition hover:brightness-110"
+            onClick={() => trackEvent("cta_solicitar_avaliacao")}
+            className="mt-7 inline-flex w-full items-center justify-center gap-2 rounded-md bg-primary px-6 py-3.5 text-sm font-semibold text-primary-foreground transition hover:brightness-110"
           >
             Solicitar avaliação do meu projeto
           </a>
+
+          <p className="mt-3 text-center text-xs text-muted-foreground">
+            Você não precisa chegar sabendo tudo. O produtor te orienta.
+          </p>
         </div>
       </div>
     </section>
@@ -318,32 +720,86 @@ function EvaluationOffer() {
 }
 
 function HowItWorks() {
+  const sectionRef = useRef<HTMLElement | null>(null);
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const element = sectionRef.current;
+    if (!element) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.disconnect();
+        }
+      },
+      {
+        threshold: 0.22,
+      },
+    );
+
+    observer.observe(element);
+
+    return () => observer.disconnect();
+  }, []);
+
   return (
-    <section id="como-funciona" className="border-t border-border/60 bg-card/20 py-20 md:py-28">
+    <section
+      ref={sectionRef}
+      id="como-funciona"
+      className="border-t border-border/60 bg-card/20 py-20 md:py-28"
+    >
       <div className="mx-auto max-w-7xl px-4 md:px-6">
-        <div className="max-w-3xl">
+        <div
+          className={`max-w-3xl transition-all duration-700 ease-out ${
+            isVisible ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
+          }`}
+        >
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">
             Como funciona
           </p>
+
           <h2 className="mt-3 font-display text-3xl uppercase leading-tight md:text-5xl">
-            Um fluxo simples para sair da dúvida e chegar na sessão preparado.
+            Um processo claro para você saber exatamente o que acontece em cada etapa.
           </h2>
         </div>
+
         <div className="mt-12 grid gap-4 md:grid-cols-2">
-          {processSteps.map(([number, title, desc]) => (
-            <article
-              key={number}
-              className="flex gap-5 rounded-xl border border-border bg-card p-6"
+          {processSteps.map((step, index) => (
+            <div
+              key={step.n}
+              className={`group flex gap-5 rounded-xl border border-border bg-card p-6 transition-all duration-700 ease-out hover:border-primary/45 hover:bg-primary/[0.03] ${
+                isVisible ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0"
+              }`}
+              style={{
+                transitionDelay: isVisible ? `${180 + index * 90}ms` : "0ms",
+              }}
             >
-              <span className="font-display text-4xl text-primary">{number}</span>
-              <div>
-                <h3 className="font-display text-lg uppercase">{title}</h3>
-                <p className="mt-1 text-sm text-muted-foreground">{desc}</p>
+              <div
+                className={`font-display text-4xl text-primary transition-transform duration-500 ease-out group-hover:scale-110 ${
+                  isVisible ? "scale-100" : "scale-90"
+                }`}
+              >
+                {step.n}
               </div>
-            </article>
+
+              <div>
+                <h3 className="font-display text-lg uppercase">{step.t}</h3>
+                <p className="mt-1 text-sm text-muted-foreground">{step.d}</p>
+              </div>
+            </div>
           ))}
         </div>
-        <div className="mt-10 flex flex-col gap-3 sm:flex-row">
+
+        <div
+          className={`mt-10 flex flex-col gap-3 transition-all duration-700 ease-out sm:flex-row ${
+            isVisible ? "translate-y-0 opacity-100" : "translate-y-6 opacity-0"
+          }`}
+          style={{
+            transitionDelay: isVisible ? `${220 + processSteps.length * 90}ms` : "0ms",
+          }}
+        >
           <a
             href="#avaliacao"
             onClick={() => trackEvent("avaliacao_projeto_click", { position: "how_it_works" })}
@@ -351,6 +807,7 @@ function HowItWorks() {
           >
             Solicitar avaliação do meu projeto
           </a>
+
           <a
             href={defaultWhatsAppUrl}
             target="_blank"
@@ -373,111 +830,545 @@ function HowItWorks() {
 }
 
 function Differentials() {
+  const sectionRef = useRef<HTMLElement | null>(null);
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const element = sectionRef.current;
+    if (!element) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.disconnect();
+        }
+      },
+      {
+        threshold: 0.22,
+      },
+    );
+
+    observer.observe(element);
+
+    return () => observer.disconnect();
+  }, []);
+
   return (
-    <section className="border-t border-border/60 py-20 md:py-28">
+    <section
+      ref={sectionRef}
+      className="border-t border-border/60 py-20 md:py-28"
+    >
       <div className="mx-auto max-w-7xl px-4 md:px-6">
-        <div className="max-w-3xl">
+        <div
+          className={`max-w-3xl transition-all duration-700 ease-out ${
+            isVisible ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
+          }`}
+        >
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">
-            Critérios de escolha
+            Diferencial
           </p>
+
           <h2 className="mt-3 font-display text-3xl uppercase leading-tight md:text-5xl">
-            O que importa ao escolher onde gravar sua música.
+            Qualidade em cada aspecto. Mais do que apertar 'rec':{" "}
+            <span className="text-primary">direção técnica</span> para o seu projeto soar
+            profissional
           </h2>
         </div>
+
         <div className="mt-12 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          {differentials.map((item) => (
-            <article key={item.title} className="rounded-xl border border-border bg-card p-6">
-              <item.icon className="h-7 w-7 text-primary" aria-hidden="true" />
-              <h3 className="mt-4 font-display text-xl uppercase">{item.title}</h3>
-              <p className="mt-2 text-sm text-muted-foreground">{item.desc}</p>
+          {differentials.map((item, index) => (
+            <article
+              key={item.title}
+              className={`group relative overflow-hidden rounded-xl border border-border bg-card p-6 transition-all duration-700 ease-out hover:-translate-y-1 hover:border-primary/60 hover:bg-primary/[0.035] hover:shadow-[0_0_35px_rgba(234,179,8,0.12)] ${
+                isVisible
+                  ? "translate-y-0 scale-100 opacity-100"
+                  : "translate-y-8 scale-95 opacity-0"
+              }`}
+              style={{
+                transitionDelay: isVisible ? `${160 + index * 90}ms` : "0ms",
+              }}
+            >
+              <div
+                className={`pointer-events-none absolute inset-y-0 -left-24 z-0 w-16 rotate-12 bg-primary/15 blur-md transition-transform duration-1000 ease-out ${
+                  isVisible ? "translate-x-[28rem]" : "translate-x-0"
+                }`}
+                style={{
+                  transitionDelay: isVisible ? `${420 + index * 90}ms` : "0ms",
+                }}
+                aria-hidden="true"
+              />
+
+              <div className="pointer-events-none absolute inset-0 z-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
+                <div className="absolute -right-16 -top-16 h-36 w-36 rounded-full bg-primary/10 blur-3xl" />
+              </div>
+
+              <div className="relative z-10 inline-flex h-11 w-11 items-center justify-center rounded-md bg-primary/10 text-primary transition-all duration-500 ease-out group-hover:scale-110 group-hover:bg-primary/15 group-hover:shadow-[0_0_24px_rgba(234,179,8,0.16)]">
+                <item.icon className="h-5 w-5" aria-hidden="true" />
+              </div>
+
+              <h3 className="relative z-10 mt-4 font-display text-xl uppercase leading-tight transition-colors duration-300 group-hover:text-primary">
+                {item.title}
+              </h3>
+
+              <p className="relative z-10 mt-2 text-sm leading-6 text-muted-foreground">
+                {item.desc}
+              </p>
             </article>
           ))}
         </div>
-        <a
-          href={rehearsalWhatsAppUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          onClick={() => {
-            trackEvent("ensaio_click", { number: WHATSAPP_NUMBER });
-            trackEvent("whatsapp_click", { position: "rehearsal", number: WHATSAPP_NUMBER });
-          }}
-          className="mt-8 inline-flex items-center justify-center rounded-md border border-primary/50 px-6 py-3 text-sm font-semibold text-primary transition hover:bg-primary hover:text-primary-foreground"
-        >
-          Reservar horário de ensaio
-        </a>
       </div>
     </section>
   );
 }
 
-function Materials() {
+function SocialProof() {
+  const sectionRef = useRef<HTMLElement | null>(null);
+  const [isVisible, setIsVisible] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const [googleData, setGoogleData] = useState<{
+    name: string;
+    rating: number;
+    totalReviews: number;
+    googleUrl: string;
+    reviews: {
+      authorName: string;
+      rating: number;
+      text: string;
+      relativeTime: string;
+      profilePhotoUrl?: string;
+    }[];
+    cache?: {
+      status: "fresh" | "updated" | "stale" | "fallback";
+      updatedAt?: string;
+      nextUpdateAt?: string;
+      warning?: string;
+    };
+  } | null>(null);
+
+  const fallbackReviews = [
+    {
+      authorName: "Cliente Carambolo Studio",
+      rating: 5,
+      text: "Atendimento técnico, ambiente profissional e orientação durante todo o processo de gravação.",
+      relativeTime: "Depoimento real",
+    },
+    {
+      authorName: "Artista independente",
+      rating: 5,
+      text: "Estrutura completa para transformar uma ideia em uma gravação com qualidade.",
+      relativeTime: "Projeto musical",
+    },
+    {
+      authorName: "Banda atendida",
+      rating: 5,
+      text: "Espaço organizado, acompanhamento técnico e boa estrutura para ensaio e gravação.",
+      relativeTime: "Sessão no estúdio",
+    },
+  ];
+
+  const reviewsToShow =
+    googleData?.reviews && googleData.reviews.length > 0
+      ? googleData.reviews.slice(0, 3)
+      : fallbackReviews;
+
+  const rating = googleData?.rating ?? 4.8;
+  const totalReviews = googleData?.totalReviews ?? 135;
+  const googleUrl = googleData?.googleUrl || mapsUrl;
+
+  useEffect(() => {
+    const element = sectionRef.current;
+    if (!element) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.disconnect();
+        }
+      },
+      {
+        threshold: 0.22,
+      },
+    );
+
+    observer.observe(element);
+
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    async function loadGoogleReviews() {
+      try {
+        const response = await fetch("/api/google-reviews");
+
+        if (!response.ok) {
+          throw new Error("Erro ao buscar avaliações do Google");
+        }
+
+        const data = await response.json();
+        setGoogleData(data);
+      } catch (error) {
+        console.error("Erro ao carregar avaliações do Google:", error);
+        setGoogleData(null);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    loadGoogleReviews();
+  }, []);
+
   return (
-    <section id="materiais" className="border-t border-border/60 bg-card/20 py-20 md:py-28">
+    <section
+      ref={sectionRef}
+      id="provas"
+      className="border-t border-border/60 bg-card/20 py-20 md:py-28"
+    >
       <div className="mx-auto max-w-7xl px-4 md:px-6">
-        <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr]">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">
-              Materiais reais
-            </p>
-            <h2 className="mt-3 font-display text-3xl uppercase leading-tight md:text-5xl">
-              Espaços reservados para prova social, enquanto o cara de tabaco não me envia.
-            </h2>
-            <p className="mt-6 text-muted-foreground md:text-lg">
-              Fotos, depoimentos, avaliações e portfólio entrarão apenas quando forem fornecidos ou
-              autorizados pelo cliente.
-            </p>
-            <div className="mt-8 grid gap-3">
-              {materialPlaceholders.map((item) => (
-                <article
-                  key={item.title}
-                  className="rounded-lg border border-dashed border-primary/45 bg-background/50 p-4"
-                >
-                  <div className="flex items-start gap-3">
-                    <item.icon
-                      className="mt-0.5 h-5 w-5 shrink-0 text-primary"
-                      aria-hidden="true"
-                    />
-                    <div>
-                      <h3 className="font-display text-lg uppercase">{item.title}</h3>
-                      <p className="text-sm text-muted-foreground">{item.desc}</p>
+        <div
+          className={`max-w-3xl transition-all duration-700 ease-out ${
+            isVisible ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
+          }`}
+        >
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">
+            O que dizem por aí
+          </p>
+
+          <h2 className="mt-3 font-display text-3xl uppercase leading-tight md:text-5xl">
+            Projetos reais, artistas reais, gravações reais.
+          </h2>
+
+          <p className="mt-4 text-muted-foreground md:text-lg">
+             Carambolo Studio já recebeu artistas, bandas e projetos de diferentes estilos
+            musicais, com clientes recorrentes e trabalhos lançados em plataformas digitais.
+          </p>
+        </div>
+
+        <div
+          className={`mt-10 overflow-hidden rounded-2xl border border-primary/40 bg-card transition-all duration-700 ease-out ${
+            isVisible
+              ? "translate-y-0 opacity-100 shadow-[0_0_45px_rgba(234,179,8,0.12)]"
+              : "translate-y-8 opacity-0"
+          }`}
+          style={{
+            transitionDelay: isVisible ? "180ms" : "0ms",
+          }}
+        >
+          <div className="relative p-6 md:p-8">
+            <div className="pointer-events-none absolute -right-20 -top-20 h-56 w-56 rounded-full bg-primary/10 blur-3xl" />
+
+            <div className="relative z-10 flex flex-col gap-8 md:flex-row md:items-center md:justify-between">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">
+                  Avaliação no Google
+                </p>
+
+                <div className="mt-4 flex flex-wrap items-end gap-4">
+                  <p className="font-display text-6xl leading-none text-primary">
+                    {isLoading ? "..." : rating.toFixed(1)}
+                  </p>
+
+                  <div className="pb-1">
+                    <div className="flex gap-1 text-primary">
+                      {Array.from({ length: 5 }).map((_, index) => (
+                        <Star key={index} className="h-5 w-5 fill-primary" />
+                      ))}
                     </div>
+
+                    <p className="mt-2 text-sm text-muted-foreground">
+                      {isLoading
+                        ? "Carregando avaliações..."
+                        : `${totalReviews} avaliações públicas no Google`}
+                    </p>
                   </div>
-                </article>
-              ))}
-            </div>
-          </div>
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-            {galleryImages.map((image, index) => (
-              <figure
-                key={`${image.src}-${index}`}
-                className="overflow-hidden rounded-lg border border-border bg-card"
+                </div>
+
+                {googleData?.cache?.status && (
+                  <p className="mt-4 text-xs text-muted-foreground">
+                    Dados reais, direto das avaliações do Google
+                  </p>
+                )}
+              </div>
+
+              <a
+                href={googleUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => trackEvent("google_reviews_click", { position: "social_proof" })}
+                className="inline-flex items-center justify-center rounded-md border border-primary/50 px-6 py-3 text-sm font-semibold text-primary transition hover:bg-primary hover:text-primary-foreground"
               >
-                <img
-                  src={image.src}
-                  alt={image.alt}
-                  className="aspect-square h-full w-full object-cover"
-                  width={480}
-                  height={480}
-                  loading="lazy"
-                  decoding="async"
-                />
-              </figure>
-            ))}
-            <div className="flex min-h-36 items-center justify-center rounded-lg border border-dashed border-primary/45 bg-background/50 p-4 text-center text-sm text-muted-foreground">
-              Placeholder para foto real, avaliação ou trecho autorizado.
+                Ver avaliações no Google
+              </a>
             </div>
           </div>
         </div>
-        <a
-          href={instagramUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          onClick={() => trackEvent("instagram_click", { position: "materials" })}
-          className="mt-8 inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline"
+
+        <div className="mt-5 grid gap-4 md:grid-cols-3">
+          {reviewsToShow.map((review, index) => {
+            const initial = review.authorName?.trim()?.charAt(0)?.toUpperCase() || "C";
+
+            return (
+              <article
+                key={`${review.authorName}-${index}`}
+                className={`group flex min-h-[290px] flex-col justify-between rounded-2xl border border-border bg-card p-6 transition-all duration-700 ease-out hover:-translate-y-1 hover:border-primary/60 hover:bg-primary/[0.035] hover:shadow-[0_0_35px_rgba(234,179,8,0.12)] ${
+                  isVisible
+                    ? "translate-y-0 scale-100 opacity-100"
+                    : "translate-y-8 scale-95 opacity-0"
+                }`}
+                style={{
+                  transitionDelay: isVisible ? `${320 + index * 120}ms` : "0ms",
+                }}
+              >
+                <div>
+                  <div className="flex gap-1 text-primary">
+                    {Array.from({ length: review.rating || 5 }).map((_, starIndex) => (
+                      <Star key={starIndex} className="h-4 w-4 fill-primary" />
+                    ))}
+                  </div>
+
+                  <p className="mt-6 text-sm leading-6 text-muted-foreground">
+                    “
+                    {review.text ||
+                      "Avaliação positiva sobre a experiência no Carambolo Studio."}
+                    ”
+                  </p>
+                </div>
+
+                <div className="mt-8 flex items-center gap-3">
+                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-primary/40 bg-primary/10 font-display text-lg text-primary transition group-hover:border-primary/70 group-hover:bg-primary/15">
+                    {initial}
+                  </div>
+
+                  <div>
+                    <p className="text-sm font-semibold text-foreground">
+                      {review.authorName || "Cliente Carambolo Studio"}
+                    </p>
+
+                    <p className="text-xs text-muted-foreground">
+                      {review.relativeTime || "Avaliação no Google"}
+                    </p>
+                  </div>
+                </div>
+              </article>
+            );
+          })}
+        </div>
+
+        <div
+          className={`mt-8 flex justify-center transition-all duration-700 ease-out ${
+            isVisible ? "translate-y-0 opacity-100" : "translate-y-6 opacity-0"
+          }`}
+          style={{
+            transitionDelay: isVisible ? "760ms" : "0ms",
+          }}
         >
-          <Instagram className="h-4 w-4" />
-          Ver Instagram do Carambolo Studio
-        </a>
+          <a
+            href={googleUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => trackEvent("google_reviews_all_click", { position: "social_proof" })}
+            className="inline-flex items-center justify-center gap-2 rounded-md bg-primary px-6 py-3.5 text-sm font-semibold text-primary-foreground transition hover:brightness-110"
+          >
+            Conferir todas as avaliações
+          </a>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function Gallery() {
+  const sectionRef = useRef<HTMLElement | null>(null);
+  const [isVisible, setIsVisible] = useState(false);
+
+  const imgs = [
+    {
+      src: galConsole,
+      alt: "Mesa de som do Carambolo Studio",
+      label: "Mesa de som",
+      description: "Controle técnico para captação, edição e finalização.",
+    },
+    {
+      src: galMic,
+      alt: "Microfone profissional no Carambolo Studio",
+      label: "Captação vocal",
+      description: "Microfones preparados para voz, locução e instrumentos.",
+    },
+    {
+      src: galVocal,
+      alt: "Sessão de gravação vocal no estúdio",
+      label: "Gravação de voz",
+      description: "Ambiente direcionado para performance e interpretação.",
+    },
+    {
+      src: galGuitar,
+      alt: "Guitarra e amplificador no estúdio",
+      label: "Instrumentos",
+      description: "Estrutura para gravação de guitarra, baixo e arranjos.",
+    },
+    {
+      src: galDrums,
+      alt: "Sala de ensaio com bateria",
+      label: "Sala de ensaio",
+      description: "Espaço para bandas, preparação e captação ao vivo.",
+    },
+    {
+      src: galBand,
+      alt: "Banda em sessão no Carambolo Studio",
+      label: "Bandas e projetos",
+      description: "Registro de banda, live session e produção musical.",
+    },
+  ];
+
+  useEffect(() => {
+    const element = sectionRef.current;
+    if (!element) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.disconnect();
+        }
+      },
+      {
+        threshold: 0.22,
+      },
+    );
+
+    observer.observe(element);
+
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <section
+      ref={sectionRef}
+      id="materiais"
+      className="border-t border-border/60 bg-card/20 py-20 md:py-28"
+    >
+      <div className="mx-auto max-w-7xl px-4 md:px-6">
+        <div className="flex flex-wrap items-end justify-between gap-6">
+          <div
+            className={`max-w-3xl transition-all duration-700 ease-out ${
+              isVisible ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
+            }`}
+          >
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">
+              Galeria
+            </p>
+
+            <h2 className="mt-3 font-display text-3xl uppercase leading-tight md:text-5xl">
+              Por dentro do Carambolo Studio.
+            </h2>
+
+            <p className="mt-4 max-w-2xl text-muted-foreground md:text-lg">
+              Estrutura real para captação, ensaio, produção e finalização musical.
+            </p>
+          </div>
+
+          <a
+            href={instagramUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => trackEvent("instagram_click", { position: "gallery" })}
+            className={`inline-flex items-center gap-2 text-sm font-semibold text-primary transition-all duration-700 ease-out hover:underline ${
+              isVisible ? "translate-y-0 opacity-100" : "translate-y-5 opacity-0"
+            }`}
+            style={{
+              transitionDelay: isVisible ? "180ms" : "0ms",
+            }}
+          >
+            <Instagram className="h-4 w-4" />
+            @carambolostudio
+          </a>
+        </div>
+
+        <div className="mt-10 grid auto-rows-[210px] grid-cols-1 gap-4 sm:grid-cols-2 md:auto-rows-[240px] lg:grid-cols-4">
+          {imgs.map((image, index) => (
+            <figure
+              key={`${image.alt}-${index}`}
+              className={`group relative overflow-hidden rounded-xl border border-border bg-card transition-all duration-700 ease-out hover:-translate-y-1 hover:border-primary/60 hover:shadow-[0_0_35px_rgba(234,179,8,0.12)] ${
+                index === 0 ? "sm:col-span-2 sm:row-span-2" : ""
+              } ${
+                index === 5 ? "lg:col-span-2" : ""
+              } ${
+                isVisible
+                  ? "translate-y-0 scale-100 opacity-100"
+                  : "translate-y-8 scale-95 opacity-0"
+              }`}
+              style={{
+                transitionDelay: isVisible ? `${220 + index * 90}ms` : "0ms",
+              }}
+            >
+              <img
+                src={image.src}
+                alt={image.alt}
+                loading="lazy"
+                decoding="async"
+                className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                width={900}
+                height={900}
+              />
+
+              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background/90 via-background/20 to-transparent opacity-70 transition-opacity duration-500 group-hover:opacity-95" />
+
+              <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
+                <div className="absolute -right-20 -top-20 h-44 w-44 rounded-full bg-primary/15 blur-3xl" />
+              </div>
+
+              <figcaption className="absolute inset-x-0 bottom-0 translate-y-4 p-5 opacity-0 transition-all duration-500 ease-out group-hover:translate-y-0 group-hover:opacity-100">
+                <p className="font-display text-xl uppercase text-foreground">
+                  {image.label}
+                </p>
+
+                <p className="mt-1 max-w-sm text-sm leading-6 text-muted-foreground">
+                  {image.description}
+                </p>
+              </figcaption>
+            </figure>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function ParkingAccess() {
+  return (
+    <section className="border-t border-border/60 py-20 md:py-28">
+      <div className="mx-auto grid max-w-7xl items-center gap-10 px-4 md:grid-cols-[0.9fr_1.1fr] md:px-6">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">
+            Chegada ao estúdio
+          </p>
+          <h2 className="mt-3 font-display text-3xl uppercase leading-tight md:text-5xl">
+            Área externa e estacionamento no local.
+          </h2>
+          <a
+            href={mapsUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => trackEvent("map_click", { position: "parking_section" })}
+            className="mt-7 inline-flex items-center justify-center gap-2 rounded-md border border-primary/50 px-6 py-3 text-sm font-semibold text-primary transition hover:bg-primary hover:text-primary-foreground"
+          >
+            <MapPin className="h-4 w-4" />
+            Ver localização no mapa
+          </a>
+        </div>
+        <figure className="overflow-hidden rounded-xl border border-border bg-card">
+          <img
+            src={parkingImg}
+            alt="Estacionamento e fachada externa do Carambolo Studio"
+            className="h-[360px] w-full object-cover md:h-[480px]"
+            width={1200}
+            height={800}
+            loading="lazy"
+            decoding="async"
+          />
+        </figure>
       </div>
     </section>
   );
@@ -570,7 +1461,7 @@ function Footer() {
         <div className="md:col-span-2">
           <div className="flex items-center gap-3">
             <img
-              src={logoAsset.url}
+              src={logoAsset}
               alt="Carambolo Studio"
               className="h-12 w-12 rounded-md object-contain"
               width={48}

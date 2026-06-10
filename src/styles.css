@@ -191,3 +191,80 @@
     background-size: 48px 48px;
   }
 }
+@keyframes music-logo {
+  0% {
+    transform: scale(1);
+    filter: brightness(1);
+  }
+
+  18% {
+    transform: scale(1.08);
+    filter: brightness(1.25);
+  }
+
+  32% {
+    transform: scale(0.98);
+    filter: brightness(1);
+  }
+
+  48% {
+    transform: scale(1.12);
+    filter: brightness(1.35);
+  }
+
+  62% {
+    transform: scale(1);
+    filter: brightness(1.05);
+  }
+
+  78% {
+    transform: scale(1.06);
+    filter: brightness(1.2);
+  }
+
+  100% {
+    transform: scale(1);
+    filter: brightness(1);
+  }
+}
+
+@keyframes music-pulse {
+  0% {
+    transform: scale(0.9);
+    opacity: 0.25;
+  }
+
+  40% {
+    transform: scale(1.25);
+    opacity: 0.65;
+  }
+
+  100% {
+    transform: scale(0.9);
+    opacity: 0.25;
+  }
+}
+
+.animate-music-logo {
+  animation: music-logo 1.15s ease-in-out infinite;
+}
+
+.animate-music-pulse {
+  animation: music-pulse 1.15s ease-in-out infinite;
+}
+@keyframes offerPulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 rgba(234, 179, 8, 0);
+  }
+
+  50% {
+    transform: scale(1.025);
+    box-shadow: 0 0 45px rgba(234, 179, 8, 0.24);
+  }
+
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 rgba(234, 179, 8, 0);
+  }
+}

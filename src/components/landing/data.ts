@@ -1,26 +1,25 @@
 import {
-  CalendarCheck,
-  Check,
+  Award,
+  Car,
   Compass,
   Disc3,
-  GalleryHorizontal,
   Headphones,
-  MapPin,
   Mic,
   Music2,
   Radio,
   Sliders,
   Sparkles,
+  Speaker,
+  UserCheck,
   Users,
-  Video,
   Volume2,
 } from "lucide-react";
 
 export const navigationLinks = [
   { href: "#gravacao", label: "Gravação" },
+  { href: "#ensaio", label: "Ensaio" },
   { href: "#como-funciona", label: "Como funciona" },
   { href: "#avaliacao", label: "Avaliação" },
-  { href: "#materiais", label: "Materiais" },
   { href: "#faq", label: "FAQ" },
 ];
 
@@ -32,7 +31,7 @@ export const serviceCards = [
   },
   {
     icon: Music2,
-    title: "Instrumentos",
+    title: "Captação de instrumentos",
     desc: "Captação de violão, guitarra, baixo, bateria e instrumentos conforme a necessidade do arranjo.",
   },
   {
@@ -68,88 +67,95 @@ export const serviceCards = [
 ];
 
 export const processSteps = [
-  [
-    "01",
-    "Você solicita a avaliação",
-    "Preenche o formulário ou chama no WhatsApp com as primeiras informações do projeto.",
-  ],
-  [
-    "02",
-    "O produtor entende a música",
-    "A conversa identifica se você precisa de captação, produção, edição, mixagem ou masterização.",
-  ],
-  [
-    "03",
-    "O escopo fica claro",
-    "Você recebe orientação sobre o formato de gravação mais adequado antes de agendar.",
-  ],
-  [
-    "04",
-    "A sessão é preparada",
-    "Referências, instrumentos, guia, horários e necessidades técnicas são alinhados.",
-  ],
-  [
-    "05",
-    "A gravação acontece",
-    "A sessão conta com acompanhamento técnico para performance, captação e tomada de decisão.",
-  ],
-  [
-    "06",
-    "O áudio segue para finalização",
-    "O material passa pelas etapas combinadas até a entrega dos arquivos finais.",
-  ],
+  {
+    n: "01",
+    t: "Você chama no WhatsApp ou preenche o formulário",
+    d: "Conte o que deseja gravar e envie as primeiras informações sobre o projeto.",
+  },
+  {
+    n: "02",
+    t: "O produtor entende sua ideia",
+    d: "Avaliamos se você precisa de captação, produção, edição, mixagem, masterização ou um projeto mais completo.",
+  },
+  {
+    n: "03",
+    t: "Você recebe orientação sobre o melhor formato",
+    d: "Nada de orçamento genérico. A proposta considera o que sua música realmente precisa.",
+  },
+  {
+    n: "04",
+    t: "A sessão é agendada",
+    d: "A reserva é feita com data e horário definidos.",
+  },
+  {
+    n: "05",
+    t: "Você recebe orientações antes da gravação",
+    d: "Orientamos sobre preparação vocal, instrumentos, referências, aquecimento e organização da sessão.",
+  },
+  {
+    n: "06",
+    t: "A gravação acontece com acompanhamento técnico",
+    d: "Durante a sessão, há orientação para captação, performance e melhor aproveitamento do tempo em estúdio.",
+  },
+  {
+    n: "07",
+    t: "O material passa pelas etapas contratadas",
+    d: "Conforme o pacote, o projeto pode seguir para edição, afinação, mixagem e masterização.",
+  },
+  {
+    n: "08",
+    t: "Você recebe o arquivo final",
+    d: "Entrega em WAV e, quando aplicável, arquivos separados por tracks.",
+  },
 ];
 
 export const recordingReasons = [
-  "Gravar uma música autoral ou cover com escopo definido.",
-  "Registrar voz, instrumento ou banda com direção durante a sessão.",
-  "Transformar guia, rascunho ou ideia inicial em uma gravação orientada.",
-  "Preparar material para lançamento, portfólio, edital, festival ou apresentação.",
+  "Para artistas que querem gravar uma música autoral.",
+  "Para cantores que querem lançar um trabalho com qualidade.",
+  "Para bandas que precisam organizar a gravação antes de entrar em sessão.",
+  "Para quem tem uma ideia inicial e precisa de direção para transformar em música gravada.",
 ];
 
 export const differentials = [
   {
     icon: Compass,
-    title: "Direção técnica na sessão",
-    desc: "Você recebe orientação para execução, captação e escolhas práticas durante a gravação.",
+    title: "Direção durante a sessão",
+    desc: "Você não grava sozinho. Há acompanhamento técnico para captação, performance e decisões do projeto.",
   },
   {
-    icon: Volume2,
-    title: "Foco no som que a música pede",
-    desc: "O processo parte do projeto, das referências e do estágio real da música.",
+    icon: Award,
+    title: "Quase 10 anos de mercado",
+    desc: "Completamos 10 anos em 2026, com experiência em gravações, ensaios, produção e projetos diversos.",
   },
   {
-    icon: CalendarCheck,
-    title: "Agendamento com preparo",
-    desc: "Antes de gravar, o estúdio alinha formato, tempo, arquivos e necessidades da sessão.",
+    icon: Sliders,
+    title: "Do arranjo à masterização",
+    desc: "Podemos participar desde a pré-produção até a entrega final, dependendo da necessidade.",
   },
   {
-    icon: Check,
-    title: "Escopo sem promessa mágica",
-    desc: "O orçamento e a entrega dependem do material, prazo, captação e etapas contratadas.",
-  },
-];
-
-export const materialPlaceholders = [
-  {
-    icon: GalleryHorizontal,
-    title: "Fotos reais do estúdio",
-    desc: "Placeholder para inserir fotos atuais de salas, microfones, instrumentos e bastidores.",
-  },
-  {
-    icon: Video,
-    title: "Portfólio e galeria",
-    desc: "Placeholder para músicas, vídeos, live sessions ou trechos autorizados pelos artistas.",
+    icon: Speaker,
+    title: "Voz, instrumentos e banda",
+    desc: "Captação de voz, instrumentos, bateria, banda completa, podcast, locução e conteúdo musical.",
   },
   {
     icon: Users,
-    title: "Depoimentos reais",
-    desc: "Placeholder para avaliações verificadas de clientes, sem nomes ou resultados inventados.",
+    title: "Músicos parceiros disponíveis",
+    desc: "Quando você precisa complementar o projeto, indicamos músicos parceiros.",
   },
   {
-    icon: MapPin,
-    title: "Avaliações públicas",
-    desc: "Placeholder para prints ou embeds de avaliações reais quando o cliente fornecer o material.",
+    icon: Volume2,
+    title: "Acústica elogiada",
+    desc: "Nossa estrutura é reconhecida pelos clientes pela acústica e funcionalidade.",
+  },
+  {
+    icon: Car,
+    title: "Estacionamento próprio",
+    desc: "Mais praticidade para artistas, bandas e equipes.",
+  },
+  {
+    icon: UserCheck,
+    title: "Atendimento direto",
+    desc: "Atendimento próximo, com orientação de quem participa do processo técnico e artístico.",
   },
 ];
 
@@ -157,6 +163,10 @@ export const faqs = [
   [
     "Preciso ter experiência para gravar?",
     "Não. A avaliação inicial serve para entender o estágio da música e orientar os próximos passos.",
+  ],
+  [
+    "Possui estacionamento?",
+    "Sim. Possuímos um amplo espaço de estacionamento, gratuito e monitorado, para promover segurança e conforto aos nossos clientes.",
   ],
   [
     "Quanto custa gravar uma música?",
