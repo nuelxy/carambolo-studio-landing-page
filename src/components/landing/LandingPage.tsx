@@ -1011,10 +1011,20 @@ function SocialProof() {
           throw new Error("Erro ao buscar avaliações do Google");
         }
 
-        const data = await response.json();
+        const payload = await response.json();
+
+        const normalizedData = payload?.data
+          ? {
+              ...payload.data,
+              cache: {
+                status: "fresh" as const,
+                updatedAt: payload.updatedAt,
+              },
+            }
+          : payload;
 
         if (!cancelled) {
-          setGoogleData(data);
+          setGoogleData(normalizedData);
         }
       } catch (error) {
         console.error("Erro ao carregar avaliações do Google:", error);
@@ -1154,18 +1164,25 @@ function SocialProof() {
                 </div>
 
                 <div className="mt-8 flex items-center gap-3">
-                  {review.profilePhotoUrl ? (
-                    <img
-                      src={review.profilePhotoUrl}
-                      alt={`Foto de ${review.authorName}`}
-                      className="h-11 w-11 shrink-0 rounded-full object-cover ring-1 ring-primary/40"
-                      loading="lazy"
-                    />
-                  ) : (
-                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-primary/40 bg-primary/10 font-display text-lg text-primary transition group-hover:border-primary/70 group-hover:bg-primary/15">
-                      {initial}
-                    </div>
-                  )}
+                  <div className="relative flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full border border-primary/40 bg-primary/10 font-display text-lg text-primary transition group-hover:border-primary/70 group-hover:bg-primary/15">
+  <span className="absolute inset-0 flex items-center justify-center">
+    {initial}
+  </span>
+
+  {review.profilePhotoUrl && (
+    <img
+      src={review.profilePhotoUrl}
+      alt=""
+      className="relative z-10 h-full w-full rounded-full object-cover"
+      loading="lazy"
+      decoding="async"
+      referrerPolicy="no-referrer"
+      onError={(event) => {
+        event.currentTarget.style.display = "none";
+      }}
+    />
+  )}
+</div>
 
                   <div>
                     <p className="text-sm font-semibold text-foreground">
