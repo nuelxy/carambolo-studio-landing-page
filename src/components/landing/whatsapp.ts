@@ -6,10 +6,10 @@ export function createWhatsAppUrl(message: string) {
 }
 
 export const defaultWhatsAppMessage =
-  "Olá, quero gravar minha música no Carambolo Studio e gostaria de solicitar uma avaliação inicial do meu projeto.";
+  "Olá, quero receber uma avaliação inicial para gravar minha música no Carambolo Studio. Gostaria de entender o melhor formato, prazo e orçamento para o meu projeto.";
 
 export const defaultWhatsAppUrl = createWhatsAppUrl(defaultWhatsAppMessage);
 
 export const rehearsalWhatsAppUrl = createWhatsAppUrl(
-  "Olá, quero reservar um horário de ensaio no Carambolo Studio e entender disponibilidade.",
+  "Olá, quero consultar horários para ensaio no Carambolo Studio. Gostaria de saber a disponibilidade, duração recomendada e valores.",
 );

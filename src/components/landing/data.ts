@@ -26,136 +26,138 @@ export const navigationLinks = [
 export const serviceCards = [
   {
     icon: Mic,
-    title: "Captação de voz",
-    desc: "Sessões vocais com direção técnica, preparo de tomada e cuidado com interpretação.",
+    title: "Gravação de voz",
+    desc: "Captação vocal com direção de performance, escolha de tomada e cuidado com interpretação.",
   },
   {
     icon: Music2,
-    title: "Captação de instrumentos",
-    desc: "Captação de violão, guitarra, baixo, bateria e instrumentos conforme a necessidade do arranjo.",
+    title: "Gravação de instrumentos",
+    desc: "Captação de violão, guitarra, baixo, bateria e outros instrumentos conforme o arranjo.",
   },
   {
     icon: Users,
     title: "Banda e live session",
-    desc: "Registro de banda, ensaio gravado ou performance com planejamento de captação.",
+    desc: "Registro de banda, ensaio gravado ou performance ao vivo com planejamento de captação.",
   },
   {
     icon: Disc3,
     title: "Single, EP ou álbum",
-    desc: "Acompanhamento para gravar uma música ou organizar etapas de um projeto maior.",
+    desc: "Organização das etapas para gravar uma música, um repertório curto ou um projeto completo.",
   },
   {
     icon: Sliders,
-    title: "Edição, mix e master",
-    desc: "Finalização técnica do áudio conforme o escopo aprovado para cada projeto.",
+    title: "Edição, mixagem e masterização",
+    desc: "Tratamento e finalização do áudio conforme o escopo definido antes da gravação.",
   },
   {
     icon: Sparkles,
     title: "Produção musical",
-    desc: "Orientação de arranjo, estrutura e estética quando a música ainda precisa tomar forma.",
+    desc: "Direção de arranjo, estrutura, estética e sonoridade para músicas que ainda precisam ganhar forma.",
   },
   {
     icon: Headphones,
-    title: "Podcast e voz",
-    desc: "Captação de áudio para podcasts, locuções, entrevistas e conteúdos falados.",
+    title: "Podcast, locução e voz",
+    desc: "Captação de áudio para podcasts, entrevistas, locuções, conteúdos falados e projetos digitais.",
   },
   {
     icon: Radio,
-    title: "Jingle e institucional",
-    desc: "Áudio para marcas, campanhas e projetos que precisam de direção sonora.",
+    title: "Jingle e áudio institucional",
+    desc: "Produção de áudio para marcas, campanhas, empresas e projetos que precisam de identidade sonora.",
   },
 ];
 
 export const processSteps = [
   {
     n: "01",
-    t: "Você chama no WhatsApp ou preenche o formulário",
-    d: "Conte o que deseja gravar e envie as primeiras informações sobre o projeto.",
+    t: "Você envia sua ideia",
+    d: "Chame no WhatsApp ou preencha o formulário com as primeiras informações sobre o projeto.",
   },
   {
     n: "02",
-    t: "O produtor entende sua ideia",
-    d: "Avaliamos se você precisa de captação, produção, edição, mixagem, masterização ou um projeto mais completo.",
+    t: "O produtor entende o estágio da música",
+    d: "Avaliamos se o projeto precisa de captação, produção, edição, mixagem, masterização ou ensaio prévio.",
   },
   {
     n: "03",
-    t: "Você recebe orientação sobre o melhor formato",
-    d: "Nada de orçamento genérico. A proposta considera o que sua música realmente precisa.",
+    t: "Você recebe uma orientação objetiva",
+    d: "A proposta considera o que sua música realmente precisa, sem orçamento genérico.",
   },
   {
     n: "04",
-    t: "A sessão é agendada",
-    d: "A reserva é feita com data e horário definidos.",
+    t: "A sessão é planejada",
+    d: "Definimos formato, tempo, estrutura necessária, data e horário.",
   },
   {
     n: "05",
-    t: "Você recebe orientações antes da gravação",
-    d: "Orientamos sobre preparação vocal, instrumentos, referências, aquecimento e organização da sessão.",
+    t: "Você se prepara antes de gravar",
+    d: "Orientamos sobre voz, instrumentos, referências, aquecimento e organização da sessão.",
   },
   {
     n: "06",
-    t: "A gravação acontece com acompanhamento técnico",
-    d: "Durante a sessão, há orientação para captação, performance e melhor aproveitamento do tempo em estúdio.",
+    t: "A gravação acontece com direção técnica",
+    d: "Durante a sessão, há acompanhamento para captação, performance e melhor uso do tempo em estúdio.",
   },
   {
     n: "07",
-    t: "O material passa pelas etapas contratadas",
-    d: "Conforme o pacote, o projeto pode seguir para edição, afinação, mixagem e masterização.",
+    t: "O material segue para finalização",
+    d: "Conforme o pacote, o projeto pode passar por edição, afinação, mixagem e masterização.",
   },
   {
     n: "08",
-    t: "Você recebe o arquivo final",
-    d: "Entrega em WAV e, quando aplicável, arquivos separados por tracks.",
+    t: "Você recebe os arquivos finais",
+    d: "Entrega em formato combinado, incluindo WAV e, quando aplicável, arquivos separados por tracks.",
   },
 ];
 
 export const recordingReasons = [
-  "Para artistas que querem gravar uma música autoral.",
-  "Para cantores que querem lançar um trabalho com qualidade.",
-  "Para bandas que precisam organizar a gravação antes de entrar em sessão.",
-  "Para quem tem uma ideia inicial e precisa de direção para transformar em música gravada.",
+  "Para artistas que querem lançar um single autoral.",
+  "Para cantores que precisam gravar voz com direção técnica.",
+  "Para bandas que querem registrar repertório, ensaio ou live session.",
+  "Para músicos que precisam de portfólio profissional.",
+  "Para projetos inscritos em edital, festival, concurso ou apresentação comercial.",
+  "Para quem tem uma ideia no celular e quer transformar em música finalizada.",
 ];
 
 export const differentials = [
   {
     icon: Compass,
     title: "Direção durante a sessão",
-    desc: "Você não grava sozinho. Há acompanhamento técnico para captação, performance e decisões do projeto.",
+    desc: "Você grava com acompanhamento técnico para captação, performance e decisões importantes do projeto.",
   },
   {
     icon: Award,
     title: "Quase 10 anos de mercado",
-    desc: "Completamos 10 anos em 2026, com experiência em gravações, ensaios, produção e projetos diversos.",
+    desc: "Em 2026, o Carambolo completa 10 anos de experiência com gravações, ensaios, produção e projetos de áudio.",
   },
   {
     icon: Sliders,
     title: "Do arranjo à masterização",
-    desc: "Podemos participar desde a pré-produção até a entrega final, dependendo da necessidade.",
+    desc: "O estúdio pode atuar da pré-produção à entrega final, conforme a necessidade de cada projeto.",
   },
   {
     icon: Speaker,
     title: "Voz, instrumentos e banda",
-    desc: "Captação de voz, instrumentos, bateria, banda completa, podcast, locução e conteúdo musical.",
+    desc: "Estrutura para captação vocal, instrumentos, bateria, banda completa, podcast, locução e conteúdo musical.",
   },
   {
     icon: Users,
-    title: "Músicos parceiros disponíveis",
-    desc: "Quando você precisa complementar o projeto, indicamos músicos parceiros.",
+    title: "Músicos parceiros",
+    desc: "Quando o projeto precisa de reforço instrumental ou arranjo, indicamos músicos parceiros.",
   },
   {
     icon: Volume2,
     title: "Acústica elogiada",
-    desc: "Nossa estrutura é reconhecida pelos clientes pela acústica e funcionalidade.",
+    desc: "A estrutura é reconhecida pelos clientes pela acústica, funcionalidade e conforto durante a sessão.",
   },
   {
     icon: Car,
     title: "Estacionamento próprio",
-    desc: "Mais praticidade para artistas, bandas e equipes.",
+    desc: "Mais praticidade para artistas, bandas, instrumentos e equipes.",
   },
   {
     icon: UserCheck,
     title: "Atendimento direto",
-    desc: "Atendimento próximo, com orientação de quem participa do processo técnico e artístico.",
+    desc: "Você fala com quem entende o processo técnico e artístico, sem atendimento impessoal.",
   },
 ];
 
@@ -165,8 +167,12 @@ export const faqs = [
     "Não. A avaliação inicial serve para entender o estágio da música e orientar os próximos passos.",
   ],
   [
-    "Possui estacionamento?",
-    "Sim. Possuímos um amplo espaço de estacionamento, gratuito e monitorado, para promover segurança e conforto aos nossos clientes.",
+    "Preciso chegar com a música pronta?",
+    "Não necessariamente. Você pode chegar com uma letra, melodia, guia de voz ou ideia inicial. A avaliação serve para entender o estágio do projeto e indicar o melhor caminho.",
+  ],
+  [
+    "Posso gravar apenas a voz?",
+    "Sim. O estúdio realiza captação vocal e pode orientar sobre base, interpretação, edição, mixagem e finalização conforme o projeto.",
   ],
   [
     "Quanto custa gravar uma música?",
@@ -177,12 +183,20 @@ export const faqs = [
     "Depende do pacote definido para o projeto. Isso deve ficar claro antes do agendamento.",
   ],
   [
+    "O Carambolo também tem sala de ensaio?",
+    "Sim. A sala de ensaio atende bandas e músicos por agendamento, com estrutura para preparação de repertório, show ou gravação.",
+  ],
+  [
     "Posso levar minha banda?",
     "Sim, desde que o formato seja alinhado antes para definir tempo, captação e estrutura necessária.",
   ],
   [
     "O arquivo final fica pronto para distribuição?",
     "O estúdio pode entregar arquivos em formatos adequados e orientar os próximos passos, conforme o escopo contratado.",
+  ],
+  [
+    "Possui estacionamento?",
+    "Sim. O estúdio possui estacionamento próprio no local, trazendo mais praticidade para artistas, bandas e equipes.",
   ],
   [
     "Onde fica o Carambolo Studio?",
