@@ -999,25 +999,41 @@ function SocialProof() {
   }, []);
 
   useEffect(() => {
+    let cancelled = false;
+
     async function loadGoogleReviews() {
       try {
-        const response = await fetch("/api/google-reviews");
+        const response = await fetch("/data/google-reviews.json", {
+          cache: "no-store",
+        });
 
         if (!response.ok) {
           throw new Error("Erro ao buscar avaliações do Google");
         }
 
         const data = await response.json();
-        setGoogleData(data);
+
+        if (!cancelled) {
+          setGoogleData(data);
+        }
       } catch (error) {
         console.error("Erro ao carregar avaliações do Google:", error);
-        setGoogleData(null);
+
+        if (!cancelled) {
+          setGoogleData(null);
+        }
       } finally {
-        setIsLoading(false);
+        if (!cancelled) {
+          setIsLoading(false);
+        }
       }
     }
 
     loadGoogleReviews();
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   return (
@@ -1041,7 +1057,7 @@ function SocialProof() {
           </h2>
 
           <p className="mt-4 text-muted-foreground md:text-lg">
-             Carambolo Studio já recebeu artistas, bandas e projetos de diferentes estilos
+            Carambolo Studio já recebeu artistas, bandas e projetos de diferentes estilos
             musicais, com clientes recorrentes e trabalhos lançados em plataformas digitais.
           </p>
         </div>
@@ -1085,9 +1101,9 @@ function SocialProof() {
                   </div>
                 </div>
 
-                {googleData?.cache?.status && (
+                {googleData?.reviews && googleData.reviews.length > 0 && (
                   <p className="mt-4 text-xs text-muted-foreground">
-                    Dados reais, direto das avaliações do Google
+                    Dados carregados do cache público das avaliações do Google
                   </p>
                 )}
               </div>
@@ -1108,6 +1124,7 @@ function SocialProof() {
         <div className="mt-5 grid gap-4 md:grid-cols-3">
           {reviewsToShow.map((review, index) => {
             const initial = review.authorName?.trim()?.charAt(0)?.toUpperCase() || "C";
+            const starsCount = Math.max(1, Math.min(5, Math.round(review.rating || 5)));
 
             return (
               <article
@@ -1123,7 +1140,7 @@ function SocialProof() {
               >
                 <div>
                   <div className="flex gap-1 text-primary">
-                    {Array.from({ length: review.rating || 5 }).map((_, starIndex) => (
+                    {Array.from({ length: starsCount }).map((_, starIndex) => (
                       <Star key={starIndex} className="h-4 w-4 fill-primary" />
                     ))}
                   </div>
@@ -1137,9 +1154,18 @@ function SocialProof() {
                 </div>
 
                 <div className="mt-8 flex items-center gap-3">
-                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-primary/40 bg-primary/10 font-display text-lg text-primary transition group-hover:border-primary/70 group-hover:bg-primary/15">
-                    {initial}
-                  </div>
+                  {review.profilePhotoUrl ? (
+                    <img
+                      src={review.profilePhotoUrl}
+                      alt={`Foto de ${review.authorName}`}
+                      className="h-11 w-11 shrink-0 rounded-full object-cover ring-1 ring-primary/40"
+                      loading="lazy"
+                    />
+                  ) : (
+                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-primary/40 bg-primary/10 font-display text-lg text-primary transition group-hover:border-primary/70 group-hover:bg-primary/15">
+                      {initial}
+                    </div>
+                  )}
 
                   <div>
                     <p className="text-sm font-semibold text-foreground">
