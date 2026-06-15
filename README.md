@@ -85,7 +85,11 @@ Formata os arquivos com Prettier.
 npm run api
 ```
 
-Executa localmente a API auxiliar de avaliações do Google em `http://localhost:3333`.
+Executa localmente a API auxiliar de avaliações do Google em:
+
+```txt
+http://localhost:3333
+```
 
 ## Estrutura principal
 
