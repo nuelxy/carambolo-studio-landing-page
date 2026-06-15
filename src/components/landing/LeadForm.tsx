@@ -94,11 +94,7 @@ function buildWhatsAppMessage(form: LeadFormState) {
 
   if (form.servico === "Produção musical") {
     lines.push(
-      `Necessidades: ${
-        form.necessidades.length
-          ? form.necessidades.join(", ")
-          : "Não informado"
-      }`,
+      `Necessidades: ${form.necessidades.length ? form.necessidades.join(", ") : "Não informado"}`,
     );
   }
 
@@ -116,6 +112,8 @@ function buildWhatsAppMessage(form: LeadFormState) {
   lines.push(
     `Detalhes adicionais: ${clean(form.detalhes)}`,
     "",
+    "Confirmação: li e concordo com os Termos de Uso e a Política de Privacidade do Carambolo Studio.",
+    "",
     "Gostaria de entender o melhor formato, prazo e orçamento para esse projeto.",
   );
 
@@ -125,16 +123,12 @@ function buildWhatsAppMessage(form: LeadFormState) {
 export function LeadForm() {
   const [form, setForm] = useState<LeadFormState>(initialForm);
   const [submitted, setSubmitted] = useState(false);
+  const [acceptedLegal, setAcceptedLegal] = useState(false);
+  const [legalError, setLegalError] = useState("");
 
-  const whatsappUrl = useMemo(
-    () => createWhatsAppUrl(buildWhatsAppMessage(form)),
-    [form],
-  );
+  const whatsappUrl = useMemo(() => createWhatsAppUrl(buildWhatsAppMessage(form)), [form]);
 
-  function setField<K extends keyof LeadFormState>(
-    field: K,
-    value: LeadFormState[K],
-  ) {
+  function setField<K extends keyof LeadFormState>(field: K, value: LeadFormState[K]) {
     setForm((current) => ({ ...current, [field]: value }));
   }
 
@@ -150,10 +144,30 @@ export function LeadForm() {
   function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
+    if (!acceptedLegal) {
+      setLegalError(
+        "Você precisa aceitar os Termos de Uso e a Política de Privacidade antes de enviar.",
+      );
+
+      trackEvent("legal_acceptance_missing", {
+        service: form.servico || "not_provided",
+      });
+
+      return;
+    }
+
+    setLegalError("");
+
     trackEvent("form_submit", {
       service: form.servico || "not_provided",
       projectType: form.tipoProjeto || "not_provided",
       hasInstagram: Boolean(form.instagram.trim()),
+      legalAccepted: true,
+    });
+
+    trackEvent("avaliacao_projeto_click", {
+      service: form.servico || "empty",
+      legalAccepted: true,
     });
 
     setSubmitted(true);
@@ -245,9 +259,7 @@ export function LeadForm() {
                   maxLength={80}
                   className={inputClass}
                   value={form.instagram}
-                  onChange={(event) =>
-                    setField("instagram", event.target.value)
-                  }
+                  onChange={(event) => setField("instagram", event.target.value)}
                   placeholder="@seuarroba ou link do perfil"
                 />
               </label>
@@ -277,9 +289,7 @@ export function LeadForm() {
                   <select
                     className={inputClass}
                     value={form.tipoProjeto}
-                    onChange={(event) =>
-                      setField("tipoProjeto", event.target.value)
-                    }
+                    onChange={(event) => setField("tipoProjeto", event.target.value)}
                   >
                     <option value="">Selecione</option>
                     <option>Voz</option>
@@ -298,9 +308,7 @@ export function LeadForm() {
                   <select
                     className={inputClass}
                     value={form.etapaMusica}
-                    onChange={(event) =>
-                      setField("etapaMusica", event.target.value)
-                    }
+                    onChange={(event) => setField("etapaMusica", event.target.value)}
                   >
                     <option value="">Selecione</option>
                     <option>Tenho apenas uma ideia inicial</option>
@@ -318,9 +326,7 @@ export function LeadForm() {
                     <select
                       className={inputClass}
                       value={form.formato}
-                      onChange={(event) =>
-                        setField("formato", event.target.value)
-                      }
+                      onChange={(event) => setField("formato", event.target.value)}
                     >
                       <option value="">Selecione</option>
                       <option>Quero apenas gravar voz ou instrumento</option>
@@ -336,9 +342,7 @@ export function LeadForm() {
                     <select
                       className={inputClass}
                       value={form.prazo}
-                      onChange={(event) =>
-                        setField("prazo", event.target.value)
-                      }
+                      onChange={(event) => setField("prazo", event.target.value)}
                     >
                       <option value="">Selecione</option>
                       <option>O quanto antes</option>
@@ -357,9 +361,7 @@ export function LeadForm() {
                     rows={3}
                     className={inputClass}
                     value={form.referencias}
-                    onChange={(event) =>
-                      setField("referencias", event.target.value)
-                    }
+                    onChange={(event) => setField("referencias", event.target.value)}
                     placeholder="Artistas, músicas, links ou estilos que ajudam a explicar o som que você quer alcançar"
                   />
                 </label>
@@ -408,15 +410,10 @@ export function LeadForm() {
                 <select
                   className={inputClass}
                   value={form.horasEnsaio}
-                  onChange={(event) =>
-                    setField("horasEnsaio", event.target.value)
-                  }
+                  onChange={(event) => setField("horasEnsaio", event.target.value)}
                 >
                   <option value="">Selecione</option>
-                  {Array.from(
-                    { length: 12 },
-                    (_, index) => `${index + 1}h`,
-                  ).map((hours) => (
+                  {Array.from({ length: 12 }, (_, index) => `${index + 1}h`).map((hours) => (
                     <option key={hours}>{hours}</option>
                   ))}
                 </select>
@@ -430,9 +427,7 @@ export function LeadForm() {
                   <input
                     className={inputClass}
                     value={form.pessoasPodcast}
-                    onChange={(event) =>
-                      setField("pessoasPodcast", event.target.value)
-                    }
+                    onChange={(event) => setField("pessoasPodcast", event.target.value)}
                     placeholder="Ex.: 2 hosts e 1 convidado"
                   />
                 </label>
@@ -442,9 +437,7 @@ export function LeadForm() {
                   <select
                     className={inputClass}
                     value={form.filmagem}
-                    onChange={(event) =>
-                      setField("filmagem", event.target.value)
-                    }
+                    onChange={(event) => setField("filmagem", event.target.value)}
                   >
                     <option value="">Selecione</option>
                     <option>Sim</option>
@@ -456,9 +449,7 @@ export function LeadForm() {
             )}
 
             <label className={labelClass}>
-              {isOther
-                ? "Conte livremente o que você precisa"
-                : "Detalhes adicionais"}
+              {isOther ? "Conte livremente o que você precisa" : "Detalhes adicionais"}
               <textarea
                 maxLength={600}
                 rows={4}
@@ -469,23 +460,73 @@ export function LeadForm() {
               />
             </label>
 
+            <div>
+              <label className="flex cursor-pointer items-start gap-3 rounded-lg border border-border bg-background/50 p-4 text-left text-sm leading-6 text-muted-foreground transition has-[:checked]:border-primary/60 has-[:checked]:bg-primary/10">
+                <input
+                  type="checkbox"
+                  required
+                  checked={acceptedLegal}
+                  onChange={(event) => {
+                    setAcceptedLegal(event.target.checked);
+
+                    if (event.target.checked) {
+                      setLegalError("");
+                    }
+                  }}
+                  onInvalid={(event) => {
+                    event.preventDefault();
+                    setLegalError(
+                      "Você precisa aceitar os Termos de Uso e a Política de Privacidade antes de enviar.",
+                    );
+                  }}
+                  aria-describedby={legalError ? "legal-consent-error" : "legal-consent-help"}
+                  className="mt-1 h-4 w-4 shrink-0 accent-primary"
+                />
+
+                <span id="legal-consent-help">
+                  Li e concordo com os{" "}
+                  <a
+                    href="/termos"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-semibold text-primary underline-offset-4 hover:underline"
+                  >
+                    Termos de Uso
+                  </a>{" "}
+                  e com a{" "}
+                  <a
+                    href="/politica-de-privacidade"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-semibold text-primary underline-offset-4 hover:underline"
+                  >
+                    Política de Privacidade
+                  </a>
+                  . Estou ciente de que meus dados serão usados para atendimento e avaliação inicial
+                  do projeto.
+                </span>
+              </label>
+
+              {legalError && (
+                <p
+                  id="legal-consent-error"
+                  role="alert"
+                  className="mt-2 text-sm font-medium text-red-400"
+                >
+                  {legalError}
+                </p>
+              )}
+            </div>
+
             <button
               type="submit"
-              onClick={() =>
-                trackEvent("avaliacao_projeto_click", {
-                  service: form.servico || "empty",
-                })
-              }
               className="inline-flex w-full items-center justify-center gap-2 rounded-md bg-primary px-6 py-4 text-sm font-semibold text-primary-foreground shadow-[var(--shadow-glow)] transition hover:brightness-110 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background"
             >
               <MessageCircle className="h-4 w-4" />
               Receber avaliação no WhatsApp
             </button>
 
-            <p
-              className="text-center text-xs text-muted-foreground"
-              aria-live="polite"
-            >
+            <p className="text-center text-xs text-muted-foreground" aria-live="polite">
               {submitted
                 ? "O WhatsApp foi aberto com sua mensagem pronta. Se o navegador bloqueou a abertura, toque novamente no botão."
                 : "As informações servem apenas para o produtor entender seu projeto antes da primeira resposta."}
