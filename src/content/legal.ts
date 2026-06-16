@@ -154,7 +154,7 @@ export const privacyPolicyText = String.raw`
 **Versão:** 1.0
 **Última atualização:** 15 de junho de 2026
 
-Esta Política de Privacidade explica como o **Carambolo Studio** coleta, utiliza, armazena, compartilha e protege dados pessoais relacionados ao uso da landing page disponível em **[INSERIR DOMÍNIO FINAL]**.
+Esta Política de Privacidade explica como o **Carambolo Studio** coleta, utiliza, armazena, compartilha e protege dados pessoais relacionados ao uso da landing page disponível em **[https://www.carambolostudio.com.br]**.
 
 A Política foi elaborada para atender aos princípios de transparência, finalidade, necessidade, segurança, prevenção e livre acesso previstos na Lei Geral de Proteção de Dados Pessoais — Lei nº 13.709/2018.
 
