@@ -3,7 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { LegalPage } from "@/components/legal/LegalPage";
 import { termsOfUseText } from "@/content/legal";
 
-export const Route = createFileRoute("/termos")({
+export const Route = createFileRoute("/termos-de-uso")({
   component: TermsPage,
 });
 

@@ -2307,7 +2307,7 @@ function Footer() {
               Política de privacidade
             </a>
 
-            <a href="/termos" className="transition hover:text-primary">
+            <a href="/termos-de-uso" className="transition hover:text-primary">
               Termos
             </a>
 

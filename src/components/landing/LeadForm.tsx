@@ -486,7 +486,7 @@ export function LeadForm() {
                 <span id="legal-consent-help">
                   Li e concordo com os{" "}
                   <a
-                    href="/termos"
+                    href="/termos-de-uso"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="font-semibold text-primary underline-offset-4 hover:underline"
