@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite dev",
     "api": "node server/google-reviews.cjs",
-    "build": "vite build",
+    "security:prebuild": "node scripts/prebuild-security-check.mjs",
+    "build": "npm run security:prebuild && vite build",
     "build:dev": "vite build --mode development",
     "preview": "vite preview",
     "lint": "eslint .",
