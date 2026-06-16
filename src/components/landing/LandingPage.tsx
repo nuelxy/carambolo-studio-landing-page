@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, type ImgHTMLAttributes, type ReactEventHandler } from "react";
 import { IntroLoader } from "./IntroLoader";
 import {
   Check,
@@ -13,16 +13,6 @@ import {
   Play,
   X,
 } from "lucide-react";
-
-import logoAsset from "@/assets/carambolo-logo.png";
-import heroImg from "@/assets/hero-studio-web.jpg";
-import galBand from "@/assets/gallery-band.jpg";
-import galConsole from "@/assets/gallery-console.jpg";
-import galDrums from "@/assets/gallery-drums.jpg";
-import galGuitar from "@/assets/gallery-guitar.jpg";
-import galMic from "@/assets/gallery-mic.jpg";
-import galVocal from "@/assets/gallery-vocal.jpg";
-import parkingImg from "@/assets/parking-studio.jpg";
 
 import {
   differentials,
@@ -40,15 +30,214 @@ const instagramUrl = "https://www.instagram.com/carambolostudio";
 const mapsUrl =
   "https://maps.google.com/?q=Av.+Fernando+Pires+Leal,+3901,+Recanto+das+Palmeiras,+Teresina,+PI";
 
-const galleryImages = [
-  { src: galMic, alt: "Microfone em estúdio para captação musical" },
-  { src: galConsole, alt: "Console de áudio em estúdio de gravação" },
-  { src: galVocal, alt: "Ambiente de gravação vocal" },
-  { src: galGuitar, alt: "Guitarra pronta para gravação" },
-  { src: galDrums, alt: "Bateria preparada para captação" },
-  { src: galBand, alt: "Banda em ambiente de gravação" },
-  { src: parkingImg, alt: "Área externa e estacionamento do Carambolo Studio" },
-];
+const optimizedAssets = import.meta.glob(
+  [
+    "/src/assets/optimized/carambolo-logo-80.avif",
+    "/src/assets/optimized/carambolo-logo-80.webp",
+    "/src/assets/optimized/carambolo-logo-160.avif",
+    "/src/assets/optimized/carambolo-logo-160.webp",
+    "/src/assets/optimized/carambolo-logo-320.avif",
+    "/src/assets/optimized/carambolo-logo-320.webp",
+    "/src/assets/optimized/carambolo-logo-320.png",
+    "/src/assets/optimized/hero-studio-768.avif",
+    "/src/assets/optimized/hero-studio-768.webp",
+    "/src/assets/optimized/hero-studio-1280.avif",
+    "/src/assets/optimized/hero-studio-1280.webp",
+    "/src/assets/optimized/hero-studio-1600.avif",
+    "/src/assets/optimized/hero-studio-1600.webp",
+    "/src/assets/optimized/hero-studio-1600.jpg",
+    "/src/assets/optimized/gallery-band-320.avif",
+    "/src/assets/optimized/gallery-band-320.webp",
+    "/src/assets/optimized/gallery-band-640.avif",
+    "/src/assets/optimized/gallery-band-640.webp",
+    "/src/assets/optimized/gallery-band-800.avif",
+    "/src/assets/optimized/gallery-band-800.webp",
+    "/src/assets/optimized/gallery-band-800.jpg",
+    "/src/assets/optimized/gallery-console-320.avif",
+    "/src/assets/optimized/gallery-console-320.webp",
+    "/src/assets/optimized/gallery-console-640.avif",
+    "/src/assets/optimized/gallery-console-640.webp",
+    "/src/assets/optimized/gallery-console-941.avif",
+    "/src/assets/optimized/gallery-console-941.webp",
+    "/src/assets/optimized/gallery-console-941.jpg",
+    "/src/assets/optimized/gallery-drums-320.avif",
+    "/src/assets/optimized/gallery-drums-320.webp",
+    "/src/assets/optimized/gallery-drums-640.avif",
+    "/src/assets/optimized/gallery-drums-640.webp",
+    "/src/assets/optimized/gallery-drums-1254.avif",
+    "/src/assets/optimized/gallery-drums-1254.webp",
+    "/src/assets/optimized/gallery-drums-1254.jpg",
+    "/src/assets/optimized/gallery-guitar-320.avif",
+    "/src/assets/optimized/gallery-guitar-320.webp",
+    "/src/assets/optimized/gallery-guitar-640.avif",
+    "/src/assets/optimized/gallery-guitar-640.webp",
+    "/src/assets/optimized/gallery-guitar-800.avif",
+    "/src/assets/optimized/gallery-guitar-800.webp",
+    "/src/assets/optimized/gallery-guitar-800.jpg",
+    "/src/assets/optimized/gallery-mic-320.avif",
+    "/src/assets/optimized/gallery-mic-320.webp",
+    "/src/assets/optimized/gallery-mic-640.avif",
+    "/src/assets/optimized/gallery-mic-640.webp",
+    "/src/assets/optimized/gallery-mic-800.avif",
+    "/src/assets/optimized/gallery-mic-800.webp",
+    "/src/assets/optimized/gallery-mic-800.jpg",
+    "/src/assets/optimized/gallery-vocal-320.avif",
+    "/src/assets/optimized/gallery-vocal-320.webp",
+    "/src/assets/optimized/gallery-vocal-640.avif",
+    "/src/assets/optimized/gallery-vocal-640.webp",
+    "/src/assets/optimized/gallery-vocal-800.avif",
+    "/src/assets/optimized/gallery-vocal-800.webp",
+    "/src/assets/optimized/gallery-vocal-800.jpg",
+    "/src/assets/optimized/parking-studio-640.avif",
+    "/src/assets/optimized/parking-studio-640.webp",
+    "/src/assets/optimized/parking-studio-960.avif",
+    "/src/assets/optimized/parking-studio-960.webp",
+    "/src/assets/optimized/parking-studio-1200.avif",
+    "/src/assets/optimized/parking-studio-1200.webp",
+    "/src/assets/optimized/parking-studio-1200.jpg",
+  ],
+  {
+    eager: true,
+    import: "default",
+    query: "?url",
+  },
+) as Record<string, string>;
+
+type ResponsiveAsset = {
+  avif: string;
+  webp: string;
+  fallback: string;
+  avifSrcSet: string;
+  webpSrcSet: string;
+  fallbackSrcSet: string;
+  width: number;
+  height: number;
+};
+
+type ResponsiveImageProps = {
+  image: ResponsiveAsset;
+  alt: string;
+  className: string;
+  sizes: string;
+  loading?: "eager" | "lazy";
+  fetchPriority?: "high" | "low" | "auto";
+  referrerPolicy?: ImgHTMLAttributes<HTMLImageElement>["referrerPolicy"];
+  onError?: ReactEventHandler<HTMLImageElement>;
+};
+
+type GoogleReview = {
+  authorName: string;
+  rating: number;
+  text: string;
+  relativeTime: string;
+  profilePhotoUrl?: string;
+};
+
+function optimizedUrl(fileName: string) {
+  const url = optimizedAssets[`/src/assets/optimized/${fileName}`];
+
+  if (!url) {
+    throw new Error(`Imagem otimizada não encontrada: ${fileName}`);
+  }
+
+  return url;
+}
+
+function createResponsiveAsset(
+  baseName: string,
+  widths: number[],
+  fallbackFormat: "jpg" | "png",
+  width: number,
+  height: number,
+  fallbackWidths = [widths.at(-1) as number],
+): ResponsiveAsset {
+  const srcSet = (format: "avif" | "webp" | "jpg" | "png", srcSetWidths = widths) =>
+    srcSetWidths
+      .map((assetWidth) => `${optimizedUrl(`${baseName}-${assetWidth}.${format}`)} ${assetWidth}w`)
+      .join(", ");
+
+  const fallbackWidth = fallbackWidths.at(-1);
+
+  if (!fallbackWidth) {
+    throw new Error(`Missing fallback width for optimized image: ${baseName}`);
+  }
+
+  const responsiveSrcSet = (format: "avif" | "webp") =>
+    widths
+      .map((assetWidth) => `${optimizedUrl(`${baseName}-${assetWidth}.${format}`)} ${assetWidth}w`)
+      .join(", ");
+
+  return {
+    avif: optimizedUrl(`${baseName}-${widths.at(-1)}.avif`),
+    webp: optimizedUrl(`${baseName}-${widths.at(-1)}.webp`),
+    fallback: optimizedUrl(`${baseName}-${fallbackWidth}.${fallbackFormat}`),
+    avifSrcSet: responsiveSrcSet("avif"),
+    webpSrcSet: responsiveSrcSet("webp"),
+    fallbackSrcSet: srcSet(fallbackFormat, fallbackWidths),
+    width,
+    height,
+  };
+}
+
+function ResponsiveImage({
+  image,
+  alt,
+  className,
+  sizes,
+  loading = "lazy",
+  fetchPriority,
+  referrerPolicy,
+  onError,
+}: ResponsiveImageProps) {
+  return (
+    <picture>
+      <source type="image/avif" srcSet={image.avifSrcSet} sizes={sizes} />
+      <source type="image/webp" srcSet={image.webpSrcSet} sizes={sizes} />
+      <img
+        src={image.fallback}
+        srcSet={image.fallbackSrcSet}
+        sizes={sizes}
+        alt={alt}
+        className={className}
+        width={image.width}
+        height={image.height}
+        loading={loading}
+        decoding="async"
+        fetchPriority={fetchPriority}
+        referrerPolicy={referrerPolicy}
+        onError={onError}
+      />
+    </picture>
+  );
+}
+
+const logoImage = createResponsiveAsset("carambolo-logo", [80, 160, 320], "png", 320, 215);
+const heroImage = createResponsiveAsset("hero-studio", [768, 1280, 1600], "jpg", 1600, 901);
+const galleryBandImage = createResponsiveAsset("gallery-band", [320, 640, 800], "jpg", 800, 800);
+const galleryConsoleImage = createResponsiveAsset(
+  "gallery-console",
+  [320, 640, 941],
+  "jpg",
+  941,
+  871,
+);
+const galleryDrumsImage = createResponsiveAsset(
+  "gallery-drums",
+  [320, 640, 1254],
+  "jpg",
+  1254,
+  1254,
+);
+const galleryGuitarImage = createResponsiveAsset(
+  "gallery-guitar",
+  [320, 640, 800],
+  "jpg",
+  800,
+  800,
+);
+const galleryMicImage = createResponsiveAsset("gallery-mic", [320, 640, 800], "jpg", 800, 800);
+const galleryVocalImage = createResponsiveAsset("gallery-vocal", [320, 640, 800], "jpg", 800, 800);
+const parkingImage = createResponsiveAsset("parking-studio", [640, 960, 1200], "jpg", 1200, 1600);
 
 export function LandingPage() {
   const [showIntro, setShowIntro] = useState(true);
@@ -100,12 +289,12 @@ function Header() {
     <header className="sticky top-0 z-40 border-b border-border/70 bg-[#050505]">
       <div className="relative mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 md:px-6">
         <a href="#top" className="flex items-center gap-2" aria-label="Voltar ao início">
-          <img
-            src={logoAsset}
+          <ResponsiveImage
+            image={logoImage}
             alt="Carambolo Studio"
             className="h-10 w-10 rounded-md object-contain"
-            width={40}
-            height={40}
+            sizes="40px"
+            loading="eager"
           />
 
           <span className="font-display text-xl">
@@ -372,13 +561,12 @@ function Hero() {
       `}</style>
 
       <div className="absolute inset-0 z-0">
-        <img
-          src={heroImg}
+        <ResponsiveImage
+          image={heroImage}
           alt="Estúdio preparado para gravação musical no Carambolo Studio"
           className="h-full w-full object-cover object-[58%_45%] opacity-100 sm:object-[56%_45%] lg:object-center"
-          width={1920}
-          height={1080}
-          decoding="async"
+          sizes="100vw"
+          loading="eager"
           fetchPriority="high"
         />
         <div className="absolute inset-0 bg-[linear-gradient(90deg,oklch(0.13_0.005_60/0.9)_0%,oklch(0.13_0.005_60/0.7)_38%,oklch(0.13_0.005_60/0.34)_68%,oklch(0.13_0.005_60/0.1)_100%)]" />
@@ -418,7 +606,9 @@ function Hero() {
               href={defaultWhatsAppUrl}
               target="_blank"
               rel="noopener noreferrer"
-              onClick={() => trackEvent("whatsapp_click", { position: "hero", number: WHATSAPP_NUMBER })}
+              onClick={() =>
+                trackEvent("whatsapp_click", { position: "hero", number: WHATSAPP_NUMBER })
+              }
               className="inline-flex items-center justify-center gap-2 rounded-md border-[1.5px] border-white/85 bg-white/[0.08] px-6 py-3.5 text-sm font-semibold text-foreground backdrop-blur-md transition hover:border-primary/80 hover:bg-white/[0.16] hover:text-foreground"
             >
               <MessageCircle className="h-4 w-4" />
@@ -427,7 +617,10 @@ function Hero() {
           </div>
 
           <div className="mt-10 hidden max-w-[40rem] sm:block">
-            <div className="hero-flow p-2" aria-label="Processo de produção musical: ideia, captação e finalização">
+            <div
+              className="hero-flow p-2"
+              aria-label="Processo de produção musical: ideia, captação e finalização"
+            >
               <div className="hero-flow-track" aria-hidden="true">
                 <span />
               </div>
@@ -504,11 +697,7 @@ function RecordingFocus() {
   }, []);
 
   return (
-    <section
-      ref={sectionRef}
-      id="gravacao"
-      className="border-t border-border/60 py-20 md:py-28"
-    >
+    <section ref={sectionRef} id="gravacao" className="border-t border-border/60 py-20 md:py-28">
       <div className="mx-auto max-w-5xl px-4 md:px-6">
         <h2
           className={`font-display text-3xl uppercase leading-tight transition-all duration-700 ease-out md:text-5xl ${
@@ -613,10 +802,7 @@ function Services() {
   }, []);
 
   return (
-    <section
-      ref={sectionRef}
-      className="border-t border-border/60 bg-card/20 py-20 md:py-28"
-    >
+    <section ref={sectionRef} className="border-t border-border/60 bg-card/20 py-20 md:py-28">
       <div className="mx-auto max-w-7xl px-4 md:px-6">
         <div
           className={`max-w-3xl transition-all duration-700 ease-out ${
@@ -658,9 +844,7 @@ function Services() {
                 {service.title}
               </h3>
 
-              <p className="relative z-10 mt-2 text-sm text-muted-foreground">
-                {service.desc}
-              </p>
+              <p className="relative z-10 mt-2 text-sm text-muted-foreground">{service.desc}</p>
             </article>
           ))}
         </div>
@@ -709,29 +893,21 @@ function Rehearsal() {
   }, []);
 
   return (
-    <section
-      ref={sectionRef}
-      id="ensaio"
-      className="border-t border-border/60 py-20 md:py-28"
-    >
+    <section ref={sectionRef} id="ensaio" className="border-t border-border/60 py-20 md:py-28">
       <div className="mx-auto grid max-w-7xl items-center gap-10 px-4 md:grid-cols-[0.95fr_1.05fr] md:px-6">
         <figure
           className={`relative min-h-[420px] overflow-hidden rounded-2xl border border-border bg-card transition-all duration-1000 ease-out md:min-h-[560px] ${
-            isVisible
-              ? "translate-y-0 opacity-100"
-              : "translate-y-8 opacity-0"
+            isVisible ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
           }`}
         >
-          <img
-            src={galDrums}
+          <ResponsiveImage
+            image={galleryDrumsImage}
             alt="Sala de ensaio do Carambolo Studio"
             loading="lazy"
-            decoding="async"
             className={`absolute inset-0 h-full w-full object-cover transition-transform duration-[1600ms] ease-out ${
               isVisible ? "scale-100" : "scale-110"
             }`}
-            width={900}
-            height={900}
+            sizes="(min-width: 768px) 50vw, calc(100vw - 32px)"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-background/75 via-background/10 to-transparent" />
         </figure>
@@ -739,9 +915,7 @@ function Rehearsal() {
         <div>
           <div
             className={`transition-all duration-700 ease-out ${
-              isVisible
-                ? "translate-y-0 opacity-100"
-                : "translate-y-6 opacity-0"
+              isVisible ? "translate-y-0 opacity-100" : "translate-y-6 opacity-0"
             }`}
           >
             <p className="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
@@ -763,9 +937,7 @@ function Rehearsal() {
               <li
                 key={feature}
                 className={`flex items-center gap-2 text-sm text-muted-foreground transition-all duration-700 ease-out ${
-                  isVisible
-                    ? "translate-y-0 opacity-100"
-                    : "translate-y-4 opacity-0"
+                  isVisible ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"
                 }`}
                 style={{
                   transitionDelay: isVisible ? `${120 + index * 45}ms` : "0ms",
@@ -822,9 +994,7 @@ function Rehearsal() {
               });
             }}
             className={`mt-7 inline-flex items-center justify-center rounded-md border border-primary/50 px-6 py-3 text-sm font-semibold text-primary transition-all duration-700 ease-out hover:bg-primary hover:text-primary-foreground ${
-              isVisible
-                ? "translate-y-0 opacity-100"
-                : "translate-y-5 opacity-0"
+              isVisible ? "translate-y-0 opacity-100" : "translate-y-5 opacity-0"
             }`}
             style={{
               transitionDelay: isVisible ? "900ms" : "0ms",
@@ -873,10 +1043,7 @@ function EvaluationOffer() {
   }, []);
 
   return (
-    <section
-      ref={sectionRef}
-      className="relative border-t border-border/60 py-20 md:py-28"
-    >
+    <section ref={sectionRef} className="relative border-t border-border/60 py-20 md:py-28">
       <div className="mx-auto grid max-w-7xl gap-10 px-4 md:grid-cols-2 md:px-6">
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">
@@ -884,8 +1051,8 @@ function EvaluationOffer() {
           </p>
 
           <h2 className="mt-3 font-display text-3xl uppercase leading-tight md:text-5xl">
-            Antes de gravar, entenda o{" "}
-            <span className="text-primary">melhor formato</span> para o seu projeto.
+            Antes de gravar, entenda o <span className="text-primary">melhor formato</span> para o
+            seu projeto.
           </h2>
 
           <div className="mt-6 space-y-4 text-muted-foreground md:text-lg">
@@ -916,9 +1083,7 @@ function EvaluationOffer() {
             Gratuito
           </div>
 
-          <h3 className="mt-3 font-display text-3xl uppercase">
-            Avaliação inicial gratuita
-          </h3>
+          <h3 className="mt-3 font-display text-3xl uppercase">Avaliação inicial gratuita</h3>
 
           <ul className="mt-6 space-y-3">
             {items.map((i) => (
@@ -1082,10 +1247,7 @@ function Differentials() {
   }, []);
 
   return (
-    <section
-      ref={sectionRef}
-      className="border-t border-border/60 py-20 md:py-28"
-    >
+    <section ref={sectionRef} className="border-t border-border/60 py-20 md:py-28">
       <div className="mx-auto max-w-7xl px-4 md:px-6">
         <div
           className={`max-w-3xl transition-all duration-700 ease-out ${
@@ -1159,13 +1321,7 @@ function SocialProof() {
     rating: number;
     totalReviews: number;
     googleUrl: string;
-    reviews: {
-      authorName: string;
-      rating: number;
-      text: string;
-      relativeTime: string;
-      profilePhotoUrl?: string;
-    }[];
+    reviews: GoogleReview[];
     cache?: {
       status: "fresh" | "updated" | "stale" | "fallback";
       updatedAt?: string;
@@ -1174,7 +1330,7 @@ function SocialProof() {
     };
   } | null>(null);
 
-  const fallbackReviews = [
+  const fallbackReviews: GoogleReview[] = [
     {
       authorName: "Cliente Carambolo Studio",
       rating: 5,
@@ -1294,8 +1450,8 @@ function SocialProof() {
           </h2>
 
           <p className="mt-4 text-muted-foreground md:text-lg">
-            Carambolo Studio já recebeu artistas, bandas e projetos de diferentes estilos
-            musicais, com clientes recorrentes e trabalhos lançados em plataformas digitais.
+            Carambolo Studio já recebeu artistas, bandas e projetos de diferentes estilos musicais,
+            com clientes recorrentes e trabalhos lançados em plataformas digitais.
           </p>
         </div>
 
@@ -1383,33 +1539,30 @@ function SocialProof() {
                   </div>
 
                   <p className="mt-6 text-sm leading-6 text-muted-foreground">
-                    “
-                    {review.text ||
-                      "Avaliação positiva sobre a experiência no Carambolo Studio."}
-                    ”
+                    “{review.text || "Avaliação positiva sobre a experiência no Carambolo Studio."}”
                   </p>
                 </div>
 
                 <div className="mt-8 flex items-center gap-3">
                   <div className="relative flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full border border-primary/40 bg-primary/10 font-display text-lg text-primary transition group-hover:border-primary/70 group-hover:bg-primary/15">
-  <span className="absolute inset-0 flex items-center justify-center">
-    {initial}
-  </span>
+                    <span className="absolute inset-0 flex items-center justify-center">
+                      {initial}
+                    </span>
 
-  {review.profilePhotoUrl && (
-    <img
-      src={review.profilePhotoUrl}
-      alt=""
-      className="relative z-10 h-full w-full rounded-full object-cover"
-      loading="lazy"
-      decoding="async"
-      referrerPolicy="no-referrer"
-      onError={(event) => {
-        event.currentTarget.style.display = "none";
-      }}
-    />
-  )}
-</div>
+                    {review.profilePhotoUrl && (
+                      <img
+                        src={review.profilePhotoUrl}
+                        alt=""
+                        className="relative z-10 h-full w-full rounded-full object-cover"
+                        loading="lazy"
+                        decoding="async"
+                        referrerPolicy="no-referrer"
+                        onError={(event) => {
+                          event.currentTarget.style.display = "none";
+                        }}
+                      />
+                    )}
+                  </div>
 
                   <div>
                     <p className="text-sm font-semibold text-foreground">
@@ -1455,37 +1608,37 @@ function Gallery() {
 
   const imgs = [
     {
-      src: galConsole,
+      image: galleryConsoleImage,
       alt: "Mesa de som do Carambolo Studio",
       label: "Mesa de som",
       description: "Controle técnico para captação, edição e finalização.",
     },
     {
-      src: galMic,
+      image: galleryMicImage,
       alt: "Microfone profissional no Carambolo Studio",
       label: "Captação vocal",
       description: "Microfones preparados para voz, locução e instrumentos.",
     },
     {
-      src: galVocal,
+      image: galleryVocalImage,
       alt: "Sessão de gravação vocal no estúdio",
       label: "Gravação de voz",
       description: "Ambiente direcionado para performance e interpretação.",
     },
     {
-      src: galGuitar,
+      image: galleryGuitarImage,
       alt: "Guitarra e amplificador no estúdio",
       label: "Instrumentos",
       description: "Estrutura para gravação de guitarra, baixo e arranjos.",
     },
     {
-      src: galDrums,
+      image: galleryDrumsImage,
       alt: "Sala de ensaio com bateria",
       label: "Sala de ensaio",
       description: "Espaço para bandas, preparação e captação ao vivo.",
     },
     {
-      src: galBand,
+      image: galleryBandImage,
       alt: "Banda em sessão no Carambolo Studio",
       label: "Bandas e projetos",
       description: "Registro de banda, live session e produção musical.",
@@ -1526,9 +1679,7 @@ function Gallery() {
               isVisible ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
             }`}
           >
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">
-              Galeria
-            </p>
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">Galeria</p>
 
             <h2 className="mt-3 font-display text-3xl uppercase leading-tight md:text-5xl">
               Por dentro do Carambolo Studio.
@@ -1562,9 +1713,7 @@ function Gallery() {
               key={`${image.alt}-${index}`}
               className={`group relative overflow-hidden rounded-xl border border-border bg-card transition-all duration-700 ease-out hover:-translate-y-1 hover:border-primary/60 hover:shadow-[0_0_35px_rgba(234,179,8,0.12)] ${
                 index === 0 ? "sm:col-span-2 sm:row-span-2" : ""
-              } ${
-                index === 5 ? "lg:col-span-2" : ""
-              } ${
+              } ${index === 5 ? "lg:col-span-2" : ""} ${
                 isVisible
                   ? "translate-y-0 scale-100 opacity-100"
                   : "translate-y-8 scale-95 opacity-0"
@@ -1573,14 +1722,18 @@ function Gallery() {
                 transitionDelay: isVisible ? `${220 + index * 90}ms` : "0ms",
               }}
             >
-              <img
-                src={image.src}
+              <ResponsiveImage
+                image={image.image}
                 alt={image.alt}
                 loading="lazy"
-                decoding="async"
                 className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-                width={900}
-                height={900}
+                sizes={
+                  index === 0
+                    ? "(min-width: 1024px) 632px, (min-width: 640px) calc((100vw - 48px) / 2), calc(100vw - 32px)"
+                    : index === 5
+                      ? "(min-width: 1024px) 632px, (min-width: 640px) calc((100vw - 48px) / 2), calc(100vw - 32px)"
+                      : "(min-width: 1024px) 308px, (min-width: 640px) calc((100vw - 48px) / 2), calc(100vw - 32px)"
+                }
               />
 
               <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background/90 via-background/20 to-transparent opacity-70 transition-opacity duration-500 group-hover:opacity-95" />
@@ -1590,9 +1743,7 @@ function Gallery() {
               </div>
 
               <figcaption className="absolute inset-x-0 bottom-0 translate-y-4 p-5 opacity-0 transition-all duration-500 ease-out group-hover:translate-y-0 group-hover:opacity-100">
-                <p className="font-display text-xl uppercase text-foreground">
-                  {image.label}
-                </p>
+                <p className="font-display text-xl uppercase text-foreground">{image.label}</p>
 
                 <p className="mt-1 max-w-sm text-sm leading-6 text-muted-foreground">
                   {image.description}
@@ -1623,9 +1774,7 @@ function ParkingAccess() {
             href={mapsUrl}
             target="_blank"
             rel="noopener noreferrer"
-            onClick={() =>
-              trackEvent("map_click", { position: "parking_section" })
-            }
+            onClick={() => trackEvent("map_click", { position: "parking_section" })}
             className="mt-7 inline-flex items-center justify-center gap-2 rounded-md border border-primary/50 px-6 py-3 text-sm font-semibold text-primary transition hover:bg-primary hover:text-primary-foreground"
           >
             <MapPin className="h-4 w-4" />
@@ -1640,14 +1789,12 @@ function ParkingAccess() {
             <div className="pointer-events-none absolute inset-0 z-10 rounded-[1.35rem] ring-1 ring-inset ring-white/10" />
             <div className="pointer-events-none absolute inset-0 z-10 rounded-[1.35rem] bg-[linear-gradient(135deg,rgba(250,204,21,0.16),transparent_28%,transparent_70%,rgba(250,204,21,0.1))]" />
 
-            <img
-              src={parkingImg}
+            <ResponsiveImage
+              image={parkingImage}
               alt="Estacionamento e fachada externa do Carambolo Studio"
               className="h-[360px] w-full object-cover md:h-[480px]"
-              width={1200}
-              height={800}
               loading="lazy"
-              decoding="async"
+              sizes="(min-width: 768px) 55vw, calc(100vw - 32px)"
             />
           </figure>
         </div>
@@ -1668,9 +1815,7 @@ function FAQ() {
 
       <div className="mx-auto max-w-3xl px-4 md:px-6">
         <div className="max-w-2xl">
-          <p className="text-xs font-semibold uppercase tracking-[0.24em] text-primary">
-            FAQ
-          </p>
+          <p className="text-xs font-semibold uppercase tracking-[0.24em] text-primary">FAQ</p>
 
           <h2 className="mt-3 font-display text-3xl uppercase leading-tight md:text-5xl">
             Dúvidas antes de gravar?
@@ -1714,9 +1859,7 @@ function FAQ() {
                     }`}
                   >
                     <ChevronDown
-                      className={`h-4 w-4 transition ${
-                        isOpen ? "rotate-180" : ""
-                      }`}
+                      className={`h-4 w-4 transition ${isOpen ? "rotate-180" : ""}`}
                       aria-hidden="true"
                     />
                   </span>
@@ -1739,8 +1882,7 @@ function FAQ() {
             </p>
 
             <p className="mt-2 font-sans text-sm leading-relaxed tracking-normal text-muted-foreground [text-shadow:none]">
-              Envie seu briefing e receba uma orientação inicial para o seu
-              projeto.
+              Envie seu briefing e receba uma orientação inicial para o seu projeto.
             </p>
           </div>
 
@@ -1861,12 +2003,12 @@ function FinalCTA() {
       `}</style>
 
       <div className="absolute inset-0 -z-10">
-        <img
-          src={galConsole}
+        <ResponsiveImage
+          image={galleryConsoleImage}
           alt=""
           className="h-full w-full object-cover opacity-18"
           loading="lazy"
-          decoding="async"
+          sizes="100vw"
         />
         <div className="absolute inset-0 bg-[linear-gradient(90deg,oklch(0.13_0.005_60/0.96)_0%,oklch(0.13_0.005_60/0.88)_52%,oklch(0.13_0.005_60/0.76)_100%)]" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_22%,oklch(0.83_0.17_88/0.18),transparent_32%)]" />
@@ -1918,8 +2060,6 @@ function FinalCTA() {
                   Falar com o produtor
                 </a>
               </div>
-
-              
             </div>
 
             <div className="rounded-[1.35rem] border border-white/12 bg-black/35 p-5 backdrop-blur-md">
@@ -1955,7 +2095,8 @@ function FinalCTA() {
 
               <div className="mt-7 rounded-2xl border border-primary/20 bg-primary/[0.07] px-4 py-3">
                 <p className="text-sm leading-6 text-foreground/72">
-                  Não precisa chegar com tudo pronto. Traga sua voz, sua melodia ou sua música quase finalizada, o resto nós cuidamos.
+                  Não precisa chegar com tudo pronto. Traga sua voz, sua melodia ou sua música quase
+                  finalizada, o resto nós cuidamos.
                 </p>
               </div>
             </div>
@@ -2009,14 +2150,12 @@ function Footer() {
         <div className="rounded-2xl border border-border bg-card/70 p-4 md:p-5">
           <div className="grid gap-5 lg:grid-cols-[1.25fr_0.8fr_1fr_auto] lg:items-center">
             <div className="flex items-center gap-3">
-              <img
-                src={logoAsset}
+              <ResponsiveImage
+                image={logoImage}
                 alt="Carambolo Studio"
                 className="h-11 w-11 rounded-md object-contain"
-                width={44}
-                height={44}
+                sizes="44px"
                 loading="lazy"
-                decoding="async"
               />
 
               <div>
@@ -2030,10 +2169,7 @@ function Footer() {
               </div>
             </div>
 
-            <nav
-              aria-label="Links de contato do rodapé"
-              className="space-y-2 text-sm"
-            >
+            <nav aria-label="Links de contato do rodapé" className="space-y-2 text-sm">
               <p className="font-display text-[0.68rem] uppercase tracking-[0.18em] text-primary">
                 Contato
               </p>
@@ -2056,9 +2192,7 @@ function Footer() {
                 href={instagramUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                onClick={() =>
-                  trackEvent("instagram_click", { position: "footer" })
-                }
+                onClick={() => trackEvent("instagram_click", { position: "footer" })}
                 className="flex items-center gap-2 text-muted-foreground transition hover:text-primary"
               >
                 <Instagram className="h-4 w-4 shrink-0" />
@@ -2076,9 +2210,7 @@ function Footer() {
                   href={mapsUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  onClick={() =>
-                    trackEvent("map_click", { position: "footer_address" })
-                  }
+                  onClick={() => trackEvent("map_click", { position: "footer_address" })}
                   className="flex items-start gap-2 text-muted-foreground transition hover:text-primary"
                 >
                   <MapPin className="mt-0.5 h-4 w-4 shrink-0" />
@@ -2091,9 +2223,7 @@ function Footer() {
                 </a>
               </address>
 
-              <p className="text-xs text-muted-foreground">
-                Atendimento sob agendamento.
-              </p>
+              <p className="text-xs text-muted-foreground">Atendimento sob agendamento.</p>
             </div>
 
             <div className="lg:justify-self-end">
@@ -2131,9 +2261,7 @@ function Footer() {
               href={mapsUrl}
               target="_blank"
               rel="noopener noreferrer"
-              onClick={() =>
-                trackEvent("map_click", { position: "footer_map_button" })
-              }
+              onClick={() => trackEvent("map_click", { position: "footer_map_button" })}
               className="hidden rounded-md border border-primary/40 px-4 py-2 text-xs font-semibold text-primary transition hover:bg-primary hover:text-primary-foreground sm:inline-flex"
             >
               Abrir no Google Maps
@@ -2146,9 +2274,7 @@ function Footer() {
             referrerPolicy="no-referrer-when-downgrade"
             src="https://maps.google.com/maps?q=Av.%20Fernando%20Pires%20Leal%2C%203901%2C%20Teresina%20PI&t=&z=15&ie=UTF8&iwloc=&output=embed"
             className="h-64 w-full grayscale md:h-72"
-            onLoad={() =>
-              trackEvent("map_embed_loaded", { position: "footer" })
-            }
+            onLoad={() => trackEvent("map_embed_loaded", { position: "footer" })}
           />
 
           <div className="border-t border-border p-4 sm:hidden">
@@ -2171,18 +2297,13 @@ function Footer() {
 
       <div className="border-t border-border/60">
         <div className="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-6 text-xs text-muted-foreground md:flex-row md:items-center md:justify-between md:px-6">
-          <p>
-            © {currentYear} Carambolo Studio. Todos os direitos reservados.
-          </p>
+          <p>© {currentYear} Carambolo Studio. Todos os direitos reservados.</p>
 
           <nav
             aria-label="Links do rodapé"
             className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-4"
           >
-            <a
-              href="/politica-de-privacidade"
-              className="transition hover:text-primary"
-            >
+            <a href="/politica-de-privacidade" className="transition hover:text-primary">
               Política de privacidade
             </a>
 

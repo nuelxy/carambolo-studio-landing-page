@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react";
-import caramboloLogo from "../../assets/carambolo-logo.png";
+
+import logoAvif from "@/assets/optimized/carambolo-logo-320.avif";
+import logoPng from "@/assets/optimized/carambolo-logo-320.png";
+import logoWebp from "@/assets/optimized/carambolo-logo-320.webp";
 
 type IntroLoaderProps = {
   onFinish: () => void;
@@ -36,11 +39,19 @@ export function IntroLoader({ onFinish }: IntroLoaderProps) {
         <div className="relative flex h-40 w-40 items-center justify-center md:h-52 md:w-52">
           <div className="absolute inset-0 rounded-full bg-primary/20 blur-2xl animate-music-pulse" />
 
-          <img
-            src={caramboloLogo}
-            alt="Carambolo Studio"
-            className="relative z-10 h-full w-full object-contain animate-music-logo"
-          />
+          <picture className="contents">
+            <source type="image/avif" srcSet={logoAvif} />
+            <source type="image/webp" srcSet={logoWebp} />
+            <img
+              src={logoPng}
+              alt="Carambolo Studio"
+              className="relative z-10 h-full w-full object-contain animate-music-logo"
+              width={320}
+              height={215}
+              loading="eager"
+              decoding="async"
+            />
+          </picture>
         </div>
 
         <div className="w-64 md:w-80">
