@@ -17,15 +17,18 @@ Esta CSP em `Report-Only` nao define `report-uri` nem `report-to`. Nesta etapa, 
 ## CSP atual
 
 ```http
-Content-Security-Policy-Report-Only: default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; script-src 'self'; img-src 'self' data: blob: https://lh3.googleusercontent.com; font-src 'self' https://fonts.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; connect-src 'self'; frame-src https://maps.google.com; upgrade-insecure-requests; require-trusted-types-for 'script'
+Content-Security-Policy-Report-Only: default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; script-src 'self'; img-src 'self' data: blob: https://lh3.googleusercontent.com; font-src 'self' https://fonts.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; connect-src 'self'; frame-src https://www.google.com https://maps.google.com; require-trusted-types-for 'script'
 ```
+
+`upgrade-insecure-requests` foi removido desta politica `Report-Only`, porque navegadores ignoram essa diretiva em modo de relatorio. A Hostinger pode continuar enviando uma CSP efetiva separada com `upgrade-insecure-requests`.
 
 ## Dominios externos autorizados
 
 - `https://fonts.googleapis.com` em `style-src`: stylesheet das fontes Google usada em `src/routes/__root.tsx`.
 - `https://fonts.gstatic.com` em `font-src`: arquivos das fontes Google carregadas pela stylesheet.
 - `https://lh3.googleusercontent.com` em `img-src`: fotos de perfil presentes em `public/data/google-reviews.json`.
-- `https://maps.google.com` em `frame-src`: iframe de mapa no rodape da landing page.
+- `https://www.google.com` em `frame-src`: autorizado exclusivamente para o iframe do mapa, porque o embed carregado pelo Google Maps resolve recursos nesse host.
+- `https://maps.google.com` em `frame-src`: origem declarada no `src` do iframe de mapa no rodape da landing page.
 
 GA4, GTM, Meta Pixel e Microsoft Clarity nao foram autorizados na CSP porque nao ha scripts reais instalados. O arquivo `src/components/landing/tracking.ts` so prepara `dataLayer`, `gtag` e `fbq` quando existirem globalmente.
 
@@ -35,6 +38,9 @@ GA4, GTM, Meta Pixel e Microsoft Clarity nao foram autorizados na CSP porque nao
 - Ha `dangerouslySetInnerHTML` para JSON-LD em `src/components/landing/LandingPage.tsx` e para estilos dinamicos de grafico em `src/components/ui/chart.tsx`.
 - Nao foram encontrados `innerHTML`, `document.write` ou `insertAdjacentHTML`.
 - `require-trusted-types-for 'script'` esta apenas em `Report-Only`, para observar compatibilidade antes de qualquer bloqueio.
+- Trusted Types ainda apresenta violacoes conhecidas e nao deve ser ativado em modo bloqueante nesta etapa.
+- Origem TrustedHTML 1: `src/components/landing/LandingPage.tsx`, linhas do footer com `<script type="application/ld+json">` e `dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessSchema) }}`. Correcao separada proposta: substituir a injecao inline por estrategia compativel com Trusted Types ou por mecanismo de renderizacao de JSON-LD validado antes de ativar bloqueio.
+- Origem TrustedHTML 2: `src/components/ui/chart.tsx`, componente `ChartStyle`, que injeta `<style dangerouslySetInnerHTML>` para variaveis CSS dinamicas de Recharts em `[data-chart=...]`. Correcao separada proposta: refatorar estilos dinamicos para CSS custom properties via `style`/classes ou criar uma solucao especifica para estilos de chart antes de ativar bloqueio.
 - `script-src 'self'` em modo `Report-Only` pode reportar o JSON-LD inline. Antes de bloquear a CSP, mover esse JSON-LD para uma estrategia com nonce/hash ou outro padrao compativel.
 
 ## SPA fallback e HTTPS
